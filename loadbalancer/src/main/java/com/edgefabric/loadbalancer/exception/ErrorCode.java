@@ -1,0 +1,15 @@
+package com.edgefabric.loadbalancer.exception;
+
+public enum ErrorCode {
+    INVALID_INPUT,
+    PAYLOAD_TOO_LARGE,
+    UNSUPPORTED_MEDIA_TYPE,
+    TYPE_MISMATCH,
+    INTERNAL_ERROR,
+    NOT_FOUND,
+    GONE,
+    SERVICE_UNAVAILABLE,
+    QUORUM_NOT_MET,
+    CLUSTER_BOOTSTRAP_FAILED,
+    CLUSTER_COMMUNICATION_FAILED
+}

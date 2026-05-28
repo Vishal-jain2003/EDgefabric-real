@@ -1,0 +1,91 @@
+{
+  "id": null,
+  "uid": "slo-simple",
+  "title": "EdgeFabric SLO (Simple)",
+  "tags": ["slo"],
+  "timezone": "browser",
+  "schemaVersion": 16,
+  "version": 0,
+  "refresh": "5s",
+  "panels": [
+    {
+      "id": 1,
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "type": "graph",
+      "title": "Cache Write Operations",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [
+        {
+          "expr": "sum(rate(edgefabric_cache_puts_total[1m]))",
+          "legendFormat": "Puts/sec",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(rate(edgefabric_quorum_repairs_triggered_total[1m]))",
+          "legendFormat": "Repairs/sec",
+          "refId": "B"
+        }
+      ],
+      "yaxes": [
+        {"format": "ops", "label": null},
+        {"format": "short", "label": null}
+      ]
+    },
+    {
+      "id": 2,
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "type": "graph",
+      "title": "Service Uptime",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [
+        {
+          "expr": "up{job=~\"edgefabric.*\"}",
+          "legendFormat": "{{job}} - {{instance}}",
+          "refId": "A"
+        }
+      ],
+      "yaxes": [
+        {"format": "short", "label": null, "max": 1.1, "min": -0.1},
+        {"format": "short", "label": null}
+      ]
+    },
+    {
+      "id": 3,
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+      "type": "graph",
+      "title": "Cluster Sync Errors",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [
+        {
+          "expr": "rate(edgefabric_cluster_sync_errors_total[1m])",
+          "legendFormat": "Errors/sec",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+      "type": "stat",
+      "title": "Active Critical Alerts",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [
+        {
+          "expr": "count(ALERTS{alertstate=\"firing\",severity=\"critical\"})",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"value": null, "color": "green"},
+              {"value": 1, "color": "red"}
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+2026-04-24 18:31:19.959 [task-1] INFO  c.e.c.migration.KeyMigrationService - Topology change detected: 1 added, 0 removed
+2026-04-24 18:31:19.960 [task-1] INFO  c.e.c.migration.KeyMigrationService - Topology change detected: 1 added, 0 removed
+2026-04-24 18:31:19.960 [task-1] DEBUG c.e.c.migration.KeyMigrationService - Cancelled pending debounced migration
+2026-04-24 18:31:19.969 [tomcat-handler-0] INFO  c.e.c.migration.KeyMigrationService - Topology change detected: 1 added, 0 removed
+2026-04-24 18:31:19.969 [tomcat-handler-0] DEBUG c.e.c.migration.KeyMigrationService - Cancelled pending debounced migration
+2026-04-24 18:31:21.982 [migration-debounce] INFO  c.e.hashing.core.ConsistentHashRing - Node added: 'cache-node-172.18.0.3-8082'. Virtual positions: 150. Total ring positions: 150. Physical nodes: 1.
+2026-04-24 18:31:21.982 [migration-debounce] DEBUG c.e.c.migration.KeyMigrationService - Added node to migration ring: cache-node-172.18.0.3-8082
+2026-04-24 18:31:21.986 [migration-debounce] INFO  c.e.hashing.core.ConsistentHashRing - Node added: 'cache-node-172.18.0.2-8082'. Virtual positions: 150. Total ring positions: 300. Physical nodes: 2.
+2026-04-24 18:31:21.986 [migration-debounce] DEBUG c.e.c.migration.KeyMigrationService - Added node to migration ring: cache-node-172.18.0.2-8082
+2026-04-24 18:31:21.988 [migration-debounce] INFO  c.e.hashing.core.ConsistentHashRing - Node added: 'cache-node-172.18.0.5-8082'. Virtual positions: 150. Total ring positions: 450. Physical nodes: 3.
+2026-04-24 18:31:21.988 [migration-debounce] DEBUG c.e.c.migration.KeyMigrationService - Added node to migration ring: cache-node-172.18.0.5-8082
+2026-04-24 18:31:21.991 [migration-debounce] INFO  c.e.hashing.core.ConsistentHashRing - Node added: 'cache-node-172.18.0.4-8082'. Virtual positions: 150. Total ring positions: 600. Physical nodes: 4.
+2026-04-24 18:31:21.991 [migration-debounce] DEBUG c.e.c.migration.KeyMigrationService - Added node to migration ring: cache-node-172.18.0.4-8082
+2026-04-24 18:31:21.994 [migration-debounce] INFO  c.e.c.migration.KeyMigrationService - Migration scan complete: scanned=0, toMigrate=0, targetNodes=0
+2026-04-24 18:32:27.276 [task-1] INFO  c.e.c.migration.KeyMigrationService - Topology change detected: 1 added, 0 removed
+2026-04-24 18:32:27.278 [task-1] INFO  c.e.c.migration.KeyMigrationService - Topology change detected: 1 added, 0 removed
+2026-04-24 18:32:27.278 [task-1] DEBUG c.e.c.migration.KeyMigrationService - Cancelled pending debounced migration
+2026-04-24 18:32:27.278 [task-1] INFO  c.e.c.migration.KeyMigrationService - Topology change detected: 1 added, 0 removed
+2026-04-24 18:32:27.279 [task-1] DEBUG c.e.c.migration.KeyMigrationService - Cancelled pending debounced migration
+2026-04-24 18:32:29.290 [migration-debounce] INFO  c.e.hashing.core.ConsistentHashRing - Node added: 'cache-node-172.18.0.3-8082'. Virtual positions: 150. Total ring positions: 150. Physical nodes: 1.
+2026-04-24 18:32:29.290 [migration-debounce] DEBUG c.e.c.migration.KeyMigrationService - Added node to migration ring: cache-node-172.18.0.3-8082
+2026-04-24 18:32:29.292 [migration-debounce] INFO  c.e.hashing.core.ConsistentHashRing - Node added: 'cache-node-172.18.0.2-8082'. Virtual positions: 150. Total ring positions: 300. Physical nodes: 2.
+2026-04-24 18:32:29.292 [migration-debounce] DEBUG c.e.c.migration.KeyMigrationService - Added node to migration ring: cache-node-172.18.0.2-8082
+2026-04-24 18:32:29.294 [migration-debounce] INFO  c.e.hashing.core.ConsistentHashRing - Node added: 'cache-node-172.18.0.5-8082'. Virtual positions: 150. Total ring positions: 450. Physical nodes: 3.
+2026-04-24 18:32:29.294 [migration-debounce] DEBUG c.e.c.migration.KeyMigrationService - Added node to migration ring: cache-node-172.18.0.5-8082
+2026-04-24 18:32:29.296 [migration-debounce] INFO  c.e.hashing.core.ConsistentHashRing - Node added: 'cache-node-172.18.0.4-8082'. Virtual positions: 150. Total ring positions: 600. Physical nodes: 4.
+2026-04-24 18:32:29.296 [migration-debounce] DEBUG c.e.c.migration.KeyMigrationService - Added node to migration ring: cache-node-172.18.0.4-8082
+2026-04-24 18:32:29.298 [migration-debounce] INFO  c.e.c.migration.KeyMigrationService - Migration scan complete: scanned=0, toMigrate=0, targetNodes=0
+2026-04-24 18:32:29.687 [tomcat-handler-1] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-4 (expiresAt=1777055827619, memoryDelta=179, totalMemory=179)
+2026-04-24 18:32:29.687 [tomcat-handler-2] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-9 (expiresAt=1777055827760, memoryDelta=179, totalMemory=358)
+2026-04-24 18:32:29.687 [tomcat-handler-0] DEBUG c.e.c.service.InternalCacheService - Rejecting stale write for key=default:migration-test-9 (stored=15038135630055 >= incoming=15038135630055)
+2026-04-24 18:32:29.687 [tomcat-handler-0] DEBUG c.e.c.service.InternalCacheService - Updated existing key=default:migration-test-9 (expiresAt=1777055827760, memoryDelta=0, totalMemory=358)
+2026-04-24 18:32:29.736 [tomcat-handler-3] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-17 (expiresAt=1777055828005, memoryDelta=180, totalMemory=538)
+2026-04-24 18:32:29.737 [tomcat-handler-4] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-10 (expiresAt=1777055827787, memoryDelta=180, totalMemory=718)
+2026-04-24 18:32:29.738 [tomcat-handler-5] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-18 (expiresAt=1777055828029, memoryDelta=180, totalMemory=898)
+2026-04-24 18:32:29.747 [tomcat-handler-7] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-15 (expiresAt=1777055827940, memoryDelta=180, totalMemory=1078)
+2026-04-24 18:32:29.747 [tomcat-handler-6] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-5 (expiresAt=1777055827646, memoryDelta=179, totalMemory=1257)
+2026-04-24 18:32:29.751 [tomcat-handler-8] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-7 (expiresAt=1777055827708, memoryDelta=179, totalMemory=1436)
+2026-04-24 18:32:29.761 [tomcat-handler-9] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-6 (expiresAt=1777055827679, memoryDelta=179, totalMemory=1615)
+2026-04-24 18:32:29.762 [tomcat-handler-10] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-13 (expiresAt=1777055827869, memoryDelta=180, totalMemory=1795)
+2026-04-24 18:32:29.762 [tomcat-handler-11] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-16 (expiresAt=1777055827974, memoryDelta=180, totalMemory=1975)
+2026-04-24 18:32:29.773 [tomcat-handler-14] DEBUG c.e.c.service.InternalCacheService - Rejecting stale write for key=default:migration-test-6 (stored=15038054291962 >= incoming=15038054291962)
+2026-04-24 18:32:29.773 [tomcat-handler-14] DEBUG c.e.c.service.InternalCacheService - Updated existing key=default:migration-test-6 (expiresAt=1777055827679, memoryDelta=0, totalMemory=1975)
+2026-04-24 18:32:29.773 [tomcat-handler-12] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-12 (expiresAt=1777055827841, memoryDelta=180, totalMemory=2155)
+2026-04-24 18:32:29.774 [tomcat-handler-13] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-29 (expiresAt=1777055828306, memoryDelta=180, totalMemory=2335)
+2026-04-24 18:32:29.788 [tomcat-handler-15] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-2 (expiresAt=1777055827558, memoryDelta=179, totalMemory=2514)
+2026-04-24 18:32:29.788 [tomcat-handler-16] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-21 (expiresAt=1777055828101, memoryDelta=180, totalMemory=2694)
+2026-04-24 18:32:29.800 [tomcat-handler-17] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-22 (expiresAt=1777055828126, memoryDelta=180, totalMemory=2874)
+2026-04-24 18:32:29.804 [tomcat-handler-18] DEBUG c.e.c.service.InternalCacheService - Rejecting stale write for key=default:migration-test-29 (stored=15038681581911 >= incoming=15038681581911)
+2026-04-24 18:32:29.804 [tomcat-handler-18] DEBUG c.e.c.service.InternalCacheService - Updated existing key=default:migration-test-29 (expiresAt=1777055828306, memoryDelta=0, totalMemory=2874)
+2026-04-24 18:32:29.805 [tomcat-handler-19] DEBUG c.e.c.service.InternalCacheService - Rejecting stale write for key=default:migration-test-10 (stored=15038162750203 >= incoming=15038162750203)
+2026-04-24 18:32:29.805 [tomcat-handler-19] DEBUG c.e.c.service.InternalCacheService - Updated existing key=default:migration-test-10 (expiresAt=1777055827787, memoryDelta=0, totalMemory=2874)
+2026-04-24 18:32:29.812 [tomcat-handler-20] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-20 (expiresAt=1777055828078, memoryDelta=180, totalMemory=3054)
+2026-04-24 18:32:29.818 [tomcat-handler-22] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-25 (expiresAt=1777055828203, memoryDelta=180, totalMemory=3234)
+2026-04-24 18:32:29.818 [tomcat-handler-21] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-30 (expiresAt=1777055828329, memoryDelta=180, totalMemory=3414)
+2026-04-24 18:32:29.831 [tomcat-handler-23] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-26 (expiresAt=1777055828228, memoryDelta=180, totalMemory=3594)
+2026-04-24 18:32:29.836 [tomcat-handler-24] DEBUG c.e.c.service.InternalCacheService - Rejecting stale write for key=default:migration-test-15 (stored=15038315265881 >= incoming=15038315265881)
+2026-04-24 18:32:29.836 [tomcat-handler-24] DEBUG c.e.c.service.InternalCacheService - Updated existing key=default:migration-test-15 (expiresAt=1777055827940, memoryDelta=0, totalMemory=3594)
+2026-04-24 18:32:29.847 [tomcat-handler-25] DEBUG c.e.c.service.InternalCacheService - Rejecting stale write for key=default:migration-test-13 (stored=15038244056995 >= incoming=15038244056995)
+2026-04-24 18:32:29.847 [tomcat-handler-25] DEBUG c.e.c.service.InternalCacheService - Updated existing key=default:migration-test-13 (expiresAt=1777055827869, memoryDelta=0, totalMemory=3594)
+2026-04-24 18:32:29.859 [tomcat-handler-26] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-1 (expiresAt=1777055827373, memoryDelta=179, totalMemory=3773)
+2026-04-24 18:32:29.871 [tomcat-handler-27] DEBUG c.e.c.service.InternalCacheService - Rejecting stale write for key=default:migration-test-2 (stored=15037933268336 >= incoming=15037933268336)
+2026-04-24 18:32:29.871 [tomcat-handler-27] DEBUG c.e.c.service.InternalCacheService - Updated existing key=default:migration-test-2 (expiresAt=1777055827558, memoryDelta=0, totalMemory=3773)
+2026-04-24 18:32:29.884 [tomcat-handler-28] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-27 (expiresAt=1777055828254, memoryDelta=180, totalMemory=3953)
+2026-04-24 18:32:29.896 [tomcat-handler-29] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-28 (expiresAt=1777055828278, memoryDelta=180, totalMemory=4133)
+2026-04-24 18:32:29.905 [tomcat-handler-30] DEBUG c.e.c.service.InternalCacheService - Rejecting stale write for key=default:migration-test-21 (stored=15038476835741 >= incoming=15038476835741)
+2026-04-24 18:32:29.906 [tomcat-handler-30] DEBUG c.e.c.service.InternalCacheService - Updated existing key=default:migration-test-21 (expiresAt=1777055828101, memoryDelta=0, totalMemory=4133)
+2026-04-24 18:32:29.916 [tomcat-handler-31] DEBUG c.e.c.service.InternalCacheService - Rejecting stale write for key=default:migration-test-22 (stored=15038502023473 >= incoming=15038502023473)
+2026-04-24 18:32:29.916 [tomcat-handler-31] DEBUG c.e.c.service.InternalCacheService - Updated existing key=default:migration-test-22 (expiresAt=1777055828126, memoryDelta=0, totalMemory=4133)
+2026-04-24 18:32:29.927 [tomcat-handler-32] DEBUG c.e.c.service.InternalCacheService - Rejecting stale write for key=default:migration-test-20 (stored=15038453358005 >= incoming=15038453358005)
+2026-04-24 18:32:29.927 [tomcat-handler-32] DEBUG c.e.c.service.InternalCacheService - Updated existing key=default:migration-test-20 (expiresAt=1777055828078, memoryDelta=0, totalMemory=4133)
+2026-04-24 18:32:29.937 [tomcat-handler-33] DEBUG c.e.c.service.InternalCacheService - Rejecting stale write for key=default:migration-test-26 (stored=15038603915931 >= incoming=15038603915931)
+2026-04-24 18:32:29.937 [tomcat-handler-33] DEBUG c.e.c.service.InternalCacheService - Updated existing key=default:migration-test-26 (expiresAt=1777055828228, memoryDelta=0, totalMemory=4133)
+2026-04-24 18:32:29.947 [tomcat-handler-34] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-23 (expiresAt=1777055828151, memoryDelta=180, totalMemory=4313)
+2026-04-24 18:32:29.958 [tomcat-handler-35] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-24 (expiresAt=1777055828178, memoryDelta=180, totalMemory=4493)
+2026-04-24 18:33:46.322 [tomcat-handler-59] WARN  c.e.c.e.GlobalExceptionHandler - Cache lookup failed: Cache not found for key: default:migration-test-3
+2026-04-24 18:33:46.398 [tomcat-handler-69] WARN  c.e.c.e.GlobalExceptionHandler - Cache lookup failed: Cache not found for key: default:migration-test-8
+2026-04-24 18:33:46.441 [tomcat-handler-75] WARN  c.e.c.e.GlobalExceptionHandler - Cache lookup failed: Cache not found for key: default:migration-test-11
+2026-04-24 18:33:46.486 [tomcat-handler-81] WARN  c.e.c.e.GlobalExceptionHandler - Cache lookup failed: Cache not found for key: default:migration-test-14
+2026-04-24 18:33:46.542 [tomcat-handler-91] WARN  c.e.c.e.GlobalExceptionHandler - Cache lookup failed: Cache not found for key: default:migration-test-19
+2026-04-24 18:33:46.794 [tomcat-handler-116] WARN  c.e.c.e.GlobalExceptionHandler - Cache lookup failed: Cache not found for key: default:migration-test-3
+2026-04-24 18:33:46.803 [tomcat-handler-117] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-3 (expiresAt=1777055827590, memoryDelta=179, totalMemory=4672)
+2026-04-24 18:33:46.894 [tomcat-handler-121] WARN  c.e.c.e.GlobalExceptionHandler - Cache lookup failed: Cache not found for key: default:migration-test-8
+2026-04-24 18:33:46.908 [tomcat-handler-122] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-8 (expiresAt=1777055827734, memoryDelta=179, totalMemory=4851)
+2026-04-24 18:33:46.989 [tomcat-handler-126] DEBUG c.e.c.service.InternalCacheService - Rejecting stale write for key=default:migration-test-12 (stored=15038216226166 >= incoming=15038216226166)
+2026-04-24 18:33:46.989 [tomcat-handler-126] DEBUG c.e.c.service.InternalCacheService - Updated existing key=default:migration-test-12 (expiresAt=1777055827841, memoryDelta=0, totalMemory=4851)
+2026-04-24 18:33:47.024 [tomcat-handler-127] WARN  c.e.c.e.GlobalExceptionHandler - Cache lookup failed: Cache not found for key: default:migration-test-14
+2026-04-24 18:33:47.033 [tomcat-handler-128] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-14 (expiresAt=1777055827895, memoryDelta=180, totalMemory=5031)
+2026-04-24 18:33:47.055 [tomcat-handler-130] DEBUG c.e.c.service.InternalCacheService - Rejecting stale write for key=default:migration-test-15 (stored=15038315265881 >= incoming=15038315265881)
+2026-04-24 18:33:47.055 [tomcat-handler-130] DEBUG c.e.c.service.InternalCacheService - Updated existing key=default:migration-test-15 (expiresAt=1777055827940, memoryDelta=0, totalMemory=5031)
+2026-04-24 18:33:47.124 [tomcat-handler-134] WARN  c.e.c.e.GlobalExceptionHandler - Cache lookup failed: Cache not found for key: default:migration-test-19
+2026-04-24 18:33:47.131 [tomcat-handler-135] DEBUG c.e.c.service.InternalCacheService - Stored new key=default:migration-test-19 (expiresAt=1777055828054, memoryDelta=180, totalMemory=5211)

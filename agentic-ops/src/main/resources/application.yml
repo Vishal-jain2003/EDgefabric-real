@@ -1,0 +1,78 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: edgefabric-agentops
+  threads:
+    virtual:
+      enabled: true
+  task:
+    scheduling:
+      pool:
+        size: 1
+  ai:
+    anthropic:
+      api-key: ${LLM_API_KEY:}
+      chat:
+        options:
+          model: claude-sonnet-4-5
+          max-tokens: 2048
+    mcp:
+      server:
+        enabled: true
+        name: edgefabric-agentops
+        version: 1.0.0
+        type: SYNC
+        sse-message-endpoint: /mcp/message
+
+# ── Agentic-ops data source URLs ───────────────────────────────────────────
+# Defaults aligned with docker-compose.yml so local dev works out-of-the-box.
+agentops:
+  loadbalancer-base-url: ${AGENTOPS_LB_URL:http://localhost:8080}
+  prometheus-base-url: ${AGENTOPS_PROMETHEUS_URL:http://localhost:9090}
+  loki-base-url: ${AGENTOPS_LOKI_URL:http://localhost:3100}
+  tempo-base-url: ${AGENTOPS_TEMPO_URL:http://localhost:3200}
+  llm:
+    model: claude-sonnet-4-5
+    max-tokens: 2048
+  # Remap Docker-internal IPs → reachable localhost ports for local dev.
+  # Run `docker ps` to verify these match your current container port bindings.
+  docker-node-host-map:
+    "172.20.0.5": "localhost:8081"
+    "172.20.0.6": "localhost:8082"
+    "172.20.0.7": "localhost:8083"
+    "172.20.0.3": "localhost:8084"
+  # Maps Docker-internal IPs → Prometheus instance label (from docker-compose service name).
+  # Used for per-node PromQL queries (latency, drain, self-healing).
+  prometheus-instance-map:
+    "172.20.0.5": "cache-node-1:8082"
+    "172.20.0.6": "cache-node-2:8082"
+    "172.20.0.7": "cache-node-3:8082"
+    "172.20.0.3": "cache-node-4:8082"
+  actions:
+    approval-timeout-minutes: 15
+    expiry-check-interval-ms: 60000
+
+# ── Spring Boot Actuator ───────────────────────────────────────────────────
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+  endpoint:
+    health:
+      show-details: always
+
+# ── OpenAPI / Swagger UI ───────────────────────────────────────────────────
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+
+# ── Logging pattern (MDC fields shown in console in non-JSON dev mode) ─────
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{traceId},%X{operation}]"

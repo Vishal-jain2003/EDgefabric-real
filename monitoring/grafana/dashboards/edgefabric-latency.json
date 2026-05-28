@@ -1,0 +1,91 @@
+{
+  "title": "EdgeFabric Latency Histograms",
+  "uid": "ef-latency",
+  "tags": [
+    "latency",
+    "edgefabric"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5s",
+  "panels": [
+    {
+      "id": 1,
+      "title": "HTTP Request Latency Heatmap",
+      "type": "heatmap",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(http_server_requests_seconds_bucket{uri!~\"/actuator.*\"}[1m])) by (le, job)",
+          "format": "heatmap",
+          "legendFormat": "{{job}} - {{le}}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "calculate": false,
+        "color": {
+          "mode": "scheme",
+          "scheme": "Spectral"
+        },
+        "yAxis": {
+          "format": "s"
+        },
+        "tooltip": {
+          "show": true,
+          "showHistogram": true
+        }
+      }
+    },
+    {
+      "id": 2,
+      "title": "API Latency (P95, P99) by Service",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 12
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{uri!~\"/actuator.*\"}[1m])) by (le, job))",
+          "legendFormat": "P95 - {{job}}",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket{uri!~\"/actuator.*\"}[1m])) by (le, job))",
+          "legendFormat": "P99 - {{job}}",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "axisPlacement": "left",
+            "drawStyle": "line"
+          }
+        },
+        "overrides": []
+      }
+    }
+  ],
+  "templating": {
+    "list": []
+  }
+}

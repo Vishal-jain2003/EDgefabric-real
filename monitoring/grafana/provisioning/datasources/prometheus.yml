@@ -1,0 +1,14 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    uid: prometheus
+    # Use environment variable for Prometheus URL (set via docker run -e PROMETHEUS_URL=http://<prometheus-ip>:9090)
+    # Falls back to localhost for local Docker Compose
+    url: http://localhost:9090
+    isDefault: true
+    editable: false
+    jsonData:
+      httpMethod: GET
+      timeInterval: 5s

@@ -1,0 +1,12 @@
+FROM prom/alertmanager:v0.27.0
+
+# Copy alertmanager configuration
+COPY alertmanager.yml /etc/alertmanager/alertmanager.yml
+
+# Expose Alertmanager UI and API
+EXPOSE 9093
+
+# Run Alertmanager with config file
+CMD ["--config.file=/etc/alertmanager/alertmanager.yml", \
+     "--storage.path=/alertmanager", \
+     "--web.external-url=http://localhost:9093"]

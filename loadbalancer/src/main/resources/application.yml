@@ -1,0 +1,133 @@
+cache:
+#  virtual-nodes: 10
+  maxCacheEntrySizeBytes: 2097152
+  pattern: "^[a-zA-Z0-9:_-]+$"
+
+
+
+# AFTER (correct)
+ring:
+  virtual-nodes: 150          # ← ring owns this
+  hash-algorithm: xxhash      # ← ring owns this — MUST match caching module ring.hash-algorithm
+
+# Quorum settings: R + W > N ensures strong consistency
+quorum:
+  replication-factor: 3       # N — number of replicas per key
+  write: 2                    # W — minimum successful writes
+  read: 2                     # R — minimum successful reads
+  timeout-ms: 5000            # per-replica call timeout (increased from 2000)
+  min-cluster-size: 3         # fail fast at startup if cluster is smaller than N
+
+# Cluster node discovery via Cloud Map DNS + gossip endpoint
+cluster:
+  dns-name: ${CLUSTER_DNS:cache-nodes.cache-cluster.internal}
+  node-port: ${CLUSTER_NODE_PORT:8082}
+  membership-path: /internal/cluster/members
+  sync-interval-ms: 5000
+  sync-timeout-ms: 5000       # per-peer membership call timeout
+  bootstrap-max-retries: 5
+  bootstrap-retry-delay-ms: 2000
+
+# Transport for forwarding GET requests from LB to cache nodes.
+#   http (default) — uses HttpClusterClient (WebClient over HTTP/1.1)
+#   grpc           — uses GrpcClusterClient (HTTP/2 + protobuf, multiplexed
+#                    streams across all 3 quorum-read replicas).
+# PUT (quorum write replication) always uses HTTP regardless of this setting.
+edgefabric:
+  cluster:
+    get:
+      transport: ${CLUSTER_GET_TRANSPORT:http}
+    grpc:
+      port: ${CLUSTER_GRPC_PORT:9091}
+    sync:
+      timeout-ms: 5000
+
+# WebClient HTTP timeouts
+webclient:
+  connect-timeout-ms: 5000    # TCP connect timeout
+  response-timeout-ms: 10000  # full response timeout (increased for slow responses)
+
+health:
+  check:
+    enabled: true
+    interval:
+      ms: 10000
+    timeout:
+      ms: 3000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,prometheus,info"
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: loadbalancer
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+  zipkin:
+    tracing:
+      endpoint: ${TEMPO_ENDPOINT:http://10.0.14.141:9411/api/v2/spans}
+  tracing:
+    sampling:
+      probability: 1.0
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  application:
+    name: edgefabric-loadbalancer
+  main:
+    web-application-type: servlet   # force MVC mode — webflux is on classpath for WebClient only
+  threads:
+    virtual:
+      enabled: true                 # Enable virtual threads to prevent thread pool starvation from blocking I/O
+  web:
+    resources:
+      add-mappings: true          # must be true for Swagger UI static resources
+
+# WAL — Write-Ahead Log
+#   Disabled by default.  Set WAL_ENABLED=true on EC2 with WAL_STORAGE=s3.
+#   For local dev without AWS set WAL_ENABLED=true and WAL_STORAGE=local.
+wal:
+  enabled: ${WAL_ENABLED:false}
+  # "s3"   — writes to AWS S3 (requires AWS credentials / instance profile)
+  # "local" — writes to wal.local-dir on disk (no AWS needed; for dev/test)
+  storage: ${WAL_STORAGE:s3}
+  s3-bucket: ${WAL_S3_BUCKET:ef-hermes-wal}
+  region: ${WAL_REGION:ap-south-1}
+  lb-id: ${LB_ID:lb1}
+  segment-size-bytes: ${WAL_SEGMENT_SIZE_BYTES:4194304}        # 4 MB per segment file
+  flush-interval-ms: ${WAL_FLUSH_INTERVAL_MS:1000}
+  # Bounded flush: drain at most flush-batch-size entries per cycle.
+  # Queue capacity = flush-batch-size + buffer-headroom (150 by default).
+  # The headroom ensures append() never blocks while a flush is in progress.
+  flush-batch-size: ${WAL_FLUSH_BATCH_SIZE:100}
+  buffer-headroom: ${WAL_BUFFER_HEADROOM:50}
+  max-flush-retries: ${WAL_MAX_FLUSH_RETRIES:3}
+  retry-backoff-ms: ${WAL_RETRY_BACKOFF_MS:500}
+  local-dir: ${WAL_LOCAL_DIR:wal-local}                        # used when storage=local
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{traceId},%X{spanId}]"

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EdgeFabric Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            padding: 32px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+            margin-top: 32px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .export-menu {
+            display: flex;
+            gap: 10px;
+        }
+
+        .export-menu button {
+            padding: 10px 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .export-menu button:hover {
+            background: rgba(255,255,255,0.25);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-1px);
+        }
+
+        .export-menu button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.1);
+        }
+
+        .card .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #6b7280;
+            margin-bottom: 8px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .card .timestamp-relative {
+            display: block;
+            font-size: 0.875rem;
+            color: #059669;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .card .timestamp-absolute {
+            display: block;
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+
+        .status-up { color: #059669; }
+        .status-down { color: #dc2626; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            text-align: left;
+            padding: 14px 16px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.875rem;
+        }
+
+        tr:hover td {
+            background: #f9fafb;
+        }
+
+        .state-alive {
+            color: #059669;
+            font-weight: 700;
+            background: #d1fae5;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .state-suspect {
+            color: #d97706;
+            font-weight: 700;
+            background: #fef3c7;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .state-dead {
+            color: #dc2626;
+            font-weight: 700;
+            background: #fee2e2;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .state-draining {
+            color: #2563eb;
+            font-weight: 700;
+            background: #dbeafe;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            margin: 0 4px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: #fff;
+            color: #374151;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .action-btn.drain {
+            background: #dbeafe;
+            color: #1e40af;
+            border-color: #93c5fd;
+        }
+
+        .action-btn.drain:hover {
+            background: #bfdbfe;
+        }
+
+        .action-btn.activate {
+            background: #d1fae5;
+            color: #065f46;
+            border-color: #6ee7b7;
+        }
+
+        .action-btn.activate:hover {
+            background: #a7f3d0;
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .spinner-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner-overlay.active { display: flex; }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-banner {
+            display: none;
+            padding: 16px 20px;
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            color: #991b1b;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .error-banner.active { display: block; }
+
+        .auto-refresh {
+            font-size: 0.875rem;
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="header-left">
+            <h1>EdgeFabric Dashboard</h1>
+            <span class="auto-refresh">Auto-refreshes every 10 seconds</span>
+        </div>
+        <div class="export-menu">
+            <button id="btn-export-csv" onclick="exportData('csv')">Export CSV</button>
+            <button id="btn-export-json" onclick="exportData('json')">Export JSON</button>
+        </div>
+    </div>
+
+    <div id="error-banner" class="error-banner"></div>
+
+    <div id="spinner-overlay" class="spinner-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div id="dashboard-content">
+        <div class="cards" id="cards"></div>
+        <h2>Gossip Members</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Node</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                    <th>Last Heartbeat</th>
+                    <th>Total Members</th>
+                    <th>Alive</th>
+                    <th>Suspect</th>
+                    <th>Dead</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="nodes-body"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const API_BASE = '/api/v1/dashboard/export';
+    let refreshTimer = null;
+
+    function showSpinner() { document.getElementById('spinner-overlay').classList.add('active'); }
+    function hideSpinner() { document.getElementById('spinner-overlay').classList.remove('active'); }
+
+    function showError(msg) {
+        const banner = document.getElementById('error-banner');
+        banner.textContent = msg;
+        banner.classList.add('active');
+    }
+
+    function clearError() {
+        document.getElementById('error-banner').classList.remove('active');
+    }
+
+    function formatTimestamp(isoString) {
+        if (!isoString) return { relative: 'N/A', absolute: '' };
+
+        var timestamp = new Date(isoString);
+        var now = new Date();
+        var diffMs = now - timestamp;
+        var diffSec = Math.floor(diffMs / 1000);
+        var diffMin = Math.floor(diffSec / 60);
+        var diffHr = Math.floor(diffMin / 60);
+        var diffDay = Math.floor(diffHr / 24);
+
+        var relative;
+        if (diffSec < 10) {
+            relative = 'Just now';
+        } else if (diffSec < 60) {
+            relative = diffSec + ' seconds ago';
+        } else if (diffMin < 60) {
+            relative = diffMin + ' minute' + (diffMin !== 1 ? 's' : '') + ' ago';
+        } else if (diffHr < 24) {
+            relative = diffHr + ' hour' + (diffHr !== 1 ? 's' : '') + ' ago';
+        } else {
+            relative = diffDay + ' day' + (diffDay !== 1 ? 's' : '') + ' ago';
+        }
+
+        var absolute = timestamp.toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+
+        return { relative: relative, absolute: absolute };
+    }
+
+    function renderDashboard(data) {
+        const statusClass = data.loadBalancerStatus === 'UP' ? 'status-up' : 'status-down';
+        const ring = data.ring || {};
+        var activeNodes = (ring.activeNodeIds || []).join(', ') || 'None';
+        var timestamp = formatTimestamp(data.exportTimestamp);
+
+        document.getElementById('cards').innerHTML =
+            '<div class="card"><div class="label">Load Balancer Status</div><div class="value ' + statusClass + '">' +
+                data.loadBalancerStatus + '</div></div>' +
+            '<div class="card"><div class="label">Node Count</div><div class="value">' +
+                (ring.nodeCount || 0) + '</div></div>' +
+            '<div class="card"><div class="label">Ring Size</div><div class="value">' +
+                (ring.ringSize || 0) + '</div></div>' +
+            '<div class="card"><div class="label">Virtual Nodes / Physical</div><div class="value">' +
+                (ring.virtualNodesPerNode || 0) + '</div></div>' +
+            '<div class="card"><div class="label">Hash Algorithm</div><div class="value" style="font-size:1.1rem">' +
+                (ring.hashAlgorithm || 'N/A') + '</div></div>' +
+            '<div class="card"><div class="label">Active Nodes</div><div class="value" style="font-size:0.95rem">' +
+                activeNodes + '</div></div>' +
+            '<div class="card"><div class="label">Last Updated</div><div class="value" style="font-size:1.1rem">' +
+                '<span class="timestamp-relative">' + timestamp.relative + '</span>' +
+                '<span class="timestamp-absolute">' + timestamp.absolute + '</span>' +
+                '</div></div>';
+
+        var tbody = document.getElementById('nodes-body');
+        tbody.innerHTML = '';
+
+        (data.nodes || []).forEach(function(node) {
+            var reachable = node.reachable;
+            var stateClass = reachable ? 'state-alive' : 'state-dead';
+            var stateLabel = reachable ? 'Yes' : 'No';
+
+            tbody.innerHTML +=
+                '<tr>' +
+                '<td><strong>' + node.sourceNodeId + '</strong></td>' +
+                '<td>' + node.sourceHost + ':' + node.sourcePort + '</td>' +
+                '<td><span class="' + stateClass + '">' + stateLabel + '</span></td>' +
+                '<td>' + (node.snapshotTime || 'N/A') + '</td>' +
+                '<td>' + node.totalNodes + '</td>' +
+                '<td>' + node.aliveCount + '</td>' +
+                '<td>' + node.suspectCount + '</td>' +
+                '<td>' + node.deadCount + '</td>' +
+                '<td></td>' +
+                '</tr>';
+
+            (node.members || []).forEach(function(m) {
+                var mClass = m.status === 'ALIVE' ? 'state-alive' :
+                             m.status === 'SUSPECT' ? 'state-suspect' :
+                             m.status === 'DRAINING' ? 'state-draining' :
+                             'state-dead';
+
+                var actions = '';
+                if (m.status === 'ALIVE') {
+                    actions = '<button class="action-btn drain" onclick="drainNode(\'' + m.host + '\', ' + m.servicePort + ')">Start Drain</button>';
+                } else if (m.status === 'DRAINING') {
+                    actions = '<button class="action-btn activate" onclick="activateNode(\'' + m.host + '\', ' + m.servicePort + ')">Stop Drain</button>';
+                }
+
+                tbody.innerHTML +=
+                    '<tr style="background:#f9fafb">' +
+                    '<td style="padding-left:32px">' + m.nodeId + (m.self ? ' <strong>(self)</strong>' : '') + '</td>' +
+                    '<td>' + m.host + ':' + m.servicePort + '</td>' +
+                    '<td><span class="' + mClass + '">' + m.status + '</span></td>' +
+                    '<td>heartbeat: ' + m.heartbeat + '</td>' +
+                    '<td colspan="4" style="font-size:0.8rem;color:#6b7280">gossip:' + m.gossipPort +
+                        ' | inc:' + m.incarnation + ' | updated ' + m.secondsSinceUpdate + 's ago</td>' +
+                    '<td>' + actions + '</td>' +
+                    '</tr>';
+            });
+        });
+    }
+
+    function fetchDashboard() {
+        showSpinner();
+        clearError();
+
+        fetch(API_BASE + '?format=json')
+            .then(function(res) {
+                if (!res.ok) {
+                    return res.json().then(function(err) {
+                        throw new Error(err.message || 'Export failed (HTTP ' + res.status + ')');
+                    });
+                }
+                return res.json();
+            })
+            .then(function(data) {
+                renderDashboard(data);
+                hideSpinner();
+            })
+            .catch(function(err) {
+                hideSpinner();
+                showError('Failed to load dashboard: ' + err.message);
+            });
+    }
+
+    function exportData(format) {
+        var btn = document.getElementById('btn-export-' + format);
+        btn.disabled = true;
+        showSpinner();
+        clearError();
+
+        fetch(API_BASE + '?format=' + format)
+            .then(function(res) {
+                if (!res.ok) {
+                    return res.json().then(function(err) {
+                        throw new Error(err.message || 'Export failed (HTTP ' + res.status + ')');
+                    });
+                }
+                var disposition = res.headers.get('Content-Disposition') || '';
+                var filenameMatch = disposition.match(/filename=([^\s;]+)/);
+                var filename = filenameMatch ? filenameMatch[1] : 'dashboard-export.' + format;
+                return res.blob().then(function(blob) { return { blob: blob, filename: filename }; });
+            })
+            .then(function(result) {
+                var url = URL.createObjectURL(result.blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = result.filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                hideSpinner();
+                btn.disabled = false;
+            })
+            .catch(function(err) {
+                hideSpinner();
+                btn.disabled = false;
+                showError('Export failed: ' + err.message);
+            });
+    }
+
+    function drainNode(host, port) {
+        if (!confirm('Start draining node ' + host + ':' + port + '?\n\nThis will stop accepting new writes but continue serving reads.')) {
+            return;
+        }
+
+        var url = '/api/v1/nodes/drain?host=' + encodeURIComponent(host) + '&port=' + port;
+        showSpinner();
+        clearError();
+
+        fetch(url, { method: 'POST' })
+            .then(function(res) {
+                if (!res.ok) {
+                    return res.json().then(function(err) {
+                        throw new Error(err.error || 'Drain failed (HTTP ' + res.status + ')');
+                    }).catch(function() {
+                        throw new Error('Drain failed (HTTP ' + res.status + ')');
+                    });
+                }
+                return res.json();
+            })
+            .then(function(data) {
+                hideSpinner();
+                alert('Success: Node ' + (data.nodeId || host + ':' + port) + ' is now ' + (data.status || 'DRAINING'));
+                fetchDashboard();
+            })
+            .catch(function(err) {
+                hideSpinner();
+                showError('Failed to drain node: ' + err.message);
+            });
+    }
+
+    function activateNode(host, port) {
+        if (!confirm('Stop draining node ' + host + ':' + port + '?\n\nThis will resume accepting writes.')) {
+            return;
+        }
+
+        var url = '/api/v1/nodes/drain?host=' + encodeURIComponent(host) + '&port=' + port;
+        showSpinner();
+        clearError();
+
+        fetch(url, { method: 'DELETE' })
+            .then(function(res) {
+                if (!res.ok) {
+                    return res.json().then(function(err) {
+                        throw new Error(err.error || 'Cancel drain failed (HTTP ' + res.status + ')');
+                    }).catch(function() {
+                        throw new Error('Cancel drain failed (HTTP ' + res.status + ')');
+                    });
+                }
+                return res.json();
+            })
+            .then(function(data) {
+                hideSpinner();
+                alert('Success: Node ' + (data.nodeId || host + ':' + port) + ' is now ' + (data.status || 'ALIVE'));
+                fetchDashboard();
+            })
+            .catch(function(err) {
+                hideSpinner();
+                showError('Failed to activate node: ' + err.message);
+            });
+    }
+
+    fetchDashboard();
+    refreshTimer = setInterval(fetchDashboard, 10000);
+</script>
+
+</body>
+</html>

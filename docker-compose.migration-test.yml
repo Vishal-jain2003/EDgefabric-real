@@ -1,0 +1,61 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  Migration Test Override
+#
+#  Usage:
+#    docker compose -f docker-compose.yml -f docker-compose.migration-test.yml up -d
+#
+#  Overrides for migration testing:
+#   - MIGRATION_DELETE_DELAY_MS=5000  : delete migrated keys after 5s (vs 15s default)
+#     so the test can observe keys disappearing from old owners faster.
+#   - Lighter memory limits (enough for dev box)
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  cache-node-1:
+    environment:
+      - MIGRATION_DELETE_DELAY_MS=5000
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  cache-node-2:
+    environment:
+      - MIGRATION_DELETE_DELAY_MS=5000
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  cache-node-3:
+    environment:
+      - MIGRATION_DELETE_DELAY_MS=5000
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  cache-node-4:
+    environment:
+      - MIGRATION_DELETE_DELAY_MS=5000
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  load-balancer:
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M

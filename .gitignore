@@ -1,0 +1,43 @@
+target/
+.idea/
+*.class
+*.log
+.env
+application-local.yml
+docker-compose.yml
+.codemie/
+!.codemie/codebase/
+!.codemie/codebase/**
+*.iml
+
+# Local Maven caches (CI builds its own)
+.m2/
+.m2repo*/
+m2repo*/
+.local-maven/
+
+# Test/temp artifacts
+*.png
+*.ps1
+load-test.*
+scrub.sh
+smoke_test.py
+run-smoke-tests.sh
+demo-touch.ps1
+sdlc-report-*.html
+.tmp_scripts/
+.gitnexus/
+.playwright-mcp/
+.env.jira
+
+# Claude Code local settings (may contain MCP env refs — never commit)
+.claude/settings.local.json
+
+# Generated Allure artifacts
+**/allure-results/
+**/.allure/
+
+# Python virtual env + caches for local MCP servers
+.venv/
+**/__pycache__/
+*.pyc

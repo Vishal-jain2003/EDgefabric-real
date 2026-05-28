@@ -1,0 +1,16 @@
+# EPMICMPHE-247: This file is superseded by dashboard.yml
+#
+# Historical context:
+#   This file incorrectly set options.path to /etc/grafana/provisioning/dashboards
+#   (the provisioning config directory itself), which caused Grafana to scan for
+#   dashboard JSON files in the wrong location and silently load zero dashboards
+#   from this provider.
+#
+# Fix: The canonical dashboard provider is defined in dashboard.yml which correctly
+#   points to /var/lib/grafana/dashboards. This file is intentionally left with an
+#   empty providers list to avoid duplicate / conflicting provider registrations
+#   when the entire provisioning/ directory is volume-mounted (docker-compose.yml).
+#
+apiVersion: 1
+
+providers: []

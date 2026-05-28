@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+html, body, #root {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background-color: #050505;
+  color: #f3f4f6;
+}
+
+* { box-sizing: border-box; }
+button, textarea { font: inherit; }
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: #0d0d0d; }
+::-webkit-scrollbar-thumb { background: #7f1d1d; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #dc2626; }
+
+/* ── Glow utilities ────────────────────────────────────────────────────── */
+.glow-red {
+  box-shadow: 0 0 20px rgba(220,38,38,0.35), 0 0 60px rgba(220,38,38,0.1);
+}
+.glow-red-sm {
+  box-shadow: 0 0 10px rgba(220,38,38,0.25);
+}
+.text-glow-red {
+  text-shadow: 0 0 12px rgba(239,68,68,0.6);
+}
+
+/* ── Skeleton shimmer ─────────────────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, #141414 25%, #2a1010 50%, #141414 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
+}
+
+/* ── Stagger delays ───────────────────────────────────────────────────── */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-600 { animation-delay: 600ms; }
+
+/* ── Prose styles for Claude markdown output ─────────────────────────── */
+.ef-prose p   { margin: 0.35em 0; line-height: 1.6; }
+.ef-prose ul  { padding-left: 1.3em; margin: 0.4em 0; }
+.ef-prose ol  { padding-left: 1.3em; margin: 0.4em 0; }
+.ef-prose li  { margin: 0.2em 0; }
+.ef-prose h1, .ef-prose h2, .ef-prose h3 {
+  color: #f87171;
+  font-weight: 700;
+  margin: 0.7em 0 0.3em;
+  letter-spacing: -0.01em;
+}
+.ef-prose h1 { font-size: 1.15em; }
+.ef-prose h2 { font-size: 1.05em; }
+.ef-prose h3 { font-size: 0.98em; }
+.ef-prose strong { color: #fca5a5; font-weight: 600; }
+.ef-prose em    { color: #fda4af; font-style: italic; }
+.ef-prose code  {
+  background: rgba(220,38,38,0.12);
+  border: 1px solid rgba(220,38,38,0.2);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  font-size: 0.82em;
+  color: #fca5a5;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+.ef-prose pre {
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(220,38,38,0.2);
+  border-radius: 8px;
+  padding: 0.8em 1em;
+  overflow-x: auto;
+  margin: 0.6em 0;
+}
+.ef-prose pre code { background: transparent; border: none; padding: 0; }
+.ef-prose blockquote {
+  border-left: 3px solid #dc2626;
+  padding-left: 0.9em;
+  color: #f87171;
+  margin: 0.5em 0;
+  font-style: italic;
+}
+.ef-prose a { color: #f87171; text-decoration: underline; }
+.ef-prose hr { border-color: #3b1515; margin: 0.8em 0; }

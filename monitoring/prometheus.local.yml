@@ -1,0 +1,48 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+  external_labels:
+    cluster: 'edgefabric-local'
+    environment: 'development'
+
+# Rule files for recording rules and alerting rules
+rule_files:
+  - "prometheus-recording-rules.yml"
+  - "prometheus-alerts.yml"
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+scrape_configs:
+  # ── Cache nodes (Docker Compose - individual static targets) ──────────────
+  - job_name: edgefabric-cache
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets:
+          - cache-node-1:8082
+          - cache-node-2:8082
+          - cache-node-3:8082
+          - cache-node-4:8082
+        labels:
+          service: cache-node
+          environment: local
+
+  # ── Load balancer (Docker Compose) ────────────────────────────────────────
+  - job_name: edgefabric-loadbalancer
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets:
+          - load-balancer:8080
+        labels:
+          service: load-balancer
+          environment: local
+
+  # ── Prometheus self-monitoring ────────────────────────────────────────────
+  - job_name: prometheus
+    static_configs:
+      - targets:
+          - localhost:9090

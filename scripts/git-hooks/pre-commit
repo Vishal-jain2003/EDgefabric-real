@@ -1,0 +1,16 @@
+#!/bin/sh
+# EdgeFabric pre-commit hook: keep .codemie/codebase/ in sync with source files.
+# Re-runs the indexer incrementally and stages any updates so the committed
+# manifest never lies about the codebase.
+
+set -e
+
+PYTHON="${PYTHON:-py}"
+command -v "$PYTHON" >/dev/null 2>&1 || PYTHON=python
+
+"$PYTHON" mcp-servers/codebase_indexer.py --incremental
+
+if git diff --name-only -- .codemie/codebase | grep -q .; then
+  echo "[pre-commit] codebase index updated - staging .codemie/codebase/"
+  git add .codemie/codebase
+fi

@@ -1,0 +1,206 @@
+{
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+    "allow": [
+      "Write",
+      "Edit",
+      "Edit(.claude/agents/*)",
+      "Edit(.claude/skills/*)",
+      "Edit(.claude/settings.json)",
+      "Skill",
+      "Read",
+      "Glob",
+      "Grep",
+      "Agent",
+      "Bash",
+      "mcp__atlassian__get_issue",
+      "mcp__atlassian__search_issues",
+      "mcp__atlassian__create_issue",
+      "mcp__atlassian__jira_update_issue",
+      "mcp__atlassian__update_issue_status",
+      "mcp__atlassian__add_issue_comment",
+      "mcp__atlassian__confluence_get_page",
+      "mcp__atlassian__confluence_search",
+      "mcp__atlassian__confluence_create_page",
+      "mcp__atlassian__update_confluence_page",
+      "mcp__gitlab__create_merge_request",
+      "mcp__gitlab__list_merge_requests",
+      "mcp__gitlab__get_merge_request",
+      "mcp__gitlab__merge_merge_request",
+      "mcp__gitlab__create_merge_request_note",
+      "mcp__gitlab__list_branches",
+      "mcp__gitlab__delete_branch",
+      "mcp__gitlab__get_pipeline",
+      "mcp__gitlab__list_pipelines",
+      "mcp__gitlab__get_job",
+      "mcp__gitlab__list_jobs",
+      "mcp__gitlab__get_job_log",
+      "mcp__gitlab__get_pipeline_status",
+      "mcp__gitlab__get_mr_status",
+      "mcp__gitlab__get_mr_diff",
+      "mcp__gitlab__add_mr_comment",
+      "mcp__gitlab__get_pipeline_jobs",
+      "mcp__gitlab__commit_files",
+      "mcp__gitlab__create_branch",
+      "mcp__gitlab__trigger_pipeline",
+      "mcp__jenkins__get_all_jobs",
+      "mcp__jenkins__get_build_status",
+      "mcp__jenkins__get_build_log",
+      "mcp__jenkins__trigger_build",
+      "mcp__jira__get_issue",
+      "mcp__jira__list_sprint_issues",
+      "mcp__jira__get_epic_stories",
+      "mcp__jira__add_issue_comment",
+      "mcp__jira__update_issue_status",
+      "mcp__jira__get_confluence_page",
+      "mcp__jira__get_confluence_page_by_id",
+      "mcp__jira__list_documentation_pages",
+      "mcp__jira__create_confluence_page",
+      "mcp__sonarqube__get_quality_gate_status",
+      "mcp__sonarqube__get_issues",
+      "mcp__sonarqube__get_metrics",
+      "mcp__sonarqube__get_hotspots",
+      "mcp__fetch__fetch",
+      "mcp__aws__*"
+    ]
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/prompt-context.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/guard-bash.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/guard-writes.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/guard-mcp.py",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "python .claude/hooks/cache-mcp.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/cache-mcp-write.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/audit-bash.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/audit-mcp.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/post-commit-lint.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/post-compile.py",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/post-config-check.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/scripts/validate-handoff.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/session-log.py",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "python .claude/hooks/token-budget.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

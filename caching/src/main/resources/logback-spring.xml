@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="applicationName" source="spring.application.name" defaultValue="edgefabric-cache-node"/>
+
+    <!-- Structured JSON console appender -->
+    <appender name="CONSOLE_JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <!-- Include MDC context fields for distributed tracing and operations -->
+            <includeMdcKeyName>nodeId</includeMdcKeyName>
+            <includeMdcKeyName>clusterId</includeMdcKeyName>
+            <includeMdcKeyName>operation</includeMdcKeyName>
+            <includeMdcKeyName>duration</includeMdcKeyName>
+            <includeMdcKeyName>statusCode</includeMdcKeyName>
+            <includeMdcKeyName>result</includeMdcKeyName>
+            <includeMdcKeyName>tenant</includeMdcKeyName>
+            <includeMdcKeyName>key</includeMdcKeyName>
+            <includeMdcKeyName>errorType</includeMdcKeyName>
+            <includeMdcKeyName>errorMessage</includeMdcKeyName>
+            <includeMdcKeyName>traceId</includeMdcKeyName>
+            <includeMdcKeyName>spanId</includeMdcKeyName>
+
+            <!-- Custom fields - service name -->
+            <customFields>{"service":"${applicationName}"}</customFields>
+
+            <!-- Include stack trace for exceptions with shortened format -->
+            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                <maxLength>2048</maxLength>
+                <shortenedClassNameLength>20</shortenedClassNameLength>
+                <exclude>^sun\.reflect\..*\.invoke</exclude>
+                <exclude>^net\.sf\.cglib\.proxy\.MethodProxy\.invoke</exclude>
+                <rootCauseFirst>true</rootCauseFirst>
+            </throwableConverter>
+        </encoder>
+    </appender>
+
+    <!-- Async appender wrapping JSON console to prevent I/O blocking hot paths -->
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>10000</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <neverBlock>true</neverBlock>
+        <maxFlushTime>5000</maxFlushTime>
+        <appender-ref ref="CONSOLE_JSON"/>
+    </appender>
+
+    <!-- Application loggers -->
+    <logger name="com.edgefabric.caching" level="${LOGGING_LEVEL:INFO}"/>
+    <logger name="com.edgefabric.caching.gossip" level="${LOGGING_LEVEL:INFO}"/>
+    <logger name="com.edgefabric.caching.service.FailureDetector" level="${LOGGING_LEVEL:INFO}"/>
+
+    <!-- Spring framework - reduce noise -->
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.springframework.boot" level="INFO"/>
+
+    <!-- Root logger uses async appender -->
+    <root level="INFO">
+        <appender-ref ref="ASYNC"/>
+    </root>
+</configuration>

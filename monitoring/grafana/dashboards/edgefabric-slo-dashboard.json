@@ -1,0 +1,340 @@
+{
+  "id": null,
+  "uid": "edgefabric-slo",
+  "title": "EdgeFabric SLO Monitoring",
+  "tags": ["edgefabric", "slo", "alerts"],
+  "timezone": "browser",
+  "schemaVersion": 27,
+  "version": 1,
+  "refresh": "5s",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Service Availability (5m avg)",
+      "type": "graph",
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "avg_over_time(up{job=~\"edgefabric-.*\"}[5m])",
+          "legendFormat": "{{job}} - {{instance}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "yaxes": [
+        {"format": "percentunit", "max": 1, "min": 0}
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Cache Operations Rate",
+      "type": "graph",
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "sum(rate(edgefabric_cache_puts_total[1m]))",
+          "legendFormat": "Puts",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        },
+        {
+          "expr": "sum(rate(edgefabric_cache_hits_total[1m]))",
+          "legendFormat": "Hits",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        },
+        {
+          "expr": "sum(rate(edgefabric_cache_misses_total[1m]))",
+          "legendFormat": "Misses",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Cache Hit Rate",
+      "type": "gauge",
+      "gridPos": {"x": 0, "y": 8, "w": 6, "h": 6},
+      "targets": [
+        {
+          "expr": "sum(rate(edgefabric_cache_hits_total[5m])) / (sum(rate(edgefabric_cache_hits_total[5m])) + sum(rate(edgefabric_cache_misses_total[5m])))",
+          "legendFormat": "Hit Rate",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "thresholds": {
+            "steps": [
+              {"value": 0, "color": "red"},
+              {"value": 0.7, "color": "yellow"},
+              {"value": 0.9, "color": "green"}
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "Cluster Sync Errors",
+      "type": "graph",
+      "gridPos": {"x": 6, "y": 8, "w": 6, "h": 6},
+      "targets": [
+        {
+          "expr": "rate(edgefabric_cluster_sync_errors_total[1m])",
+          "legendFormat": "Sync Errors",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Failure Detector Activity",
+      "type": "graph",
+      "gridPos": {"x": 12, "y": 8, "w": 6, "h": 6},
+      "targets": [
+        {
+          "expr": "rate(edgefabric_failure_detector_pings_total[1m])",
+          "legendFormat": "Pings",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        },
+        {
+          "expr": "rate(edgefabric_failure_detector_suspects_total[1m])",
+          "legendFormat": "Suspects",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Active Alerts",
+      "type": "table",
+      "gridPos": {"x": 18, "y": 8, "w": 6, "h": 6},
+      "targets": [
+        {
+          "expr": "ALERTS{alertstate=\"firing\"}",
+          "format": "table",
+          "instant": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "alertstate": true
+            },
+            "indexByName": {
+              "alertname": 0,
+              "severity": 1,
+              "component": 2,
+              "Value": 3
+            },
+            "renameByName": {
+              "alertname": "Alert",
+              "severity": "Severity",
+              "component": "Component",
+              "Value": "Status"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "overrides": [
+          {
+            "matcher": {"id": "byName", "options": "Severity"},
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "thresholds"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {"value": null, "color": "transparent"},
+                    {"value": "warning", "color": "yellow"},
+                    {"value": "critical", "color": "red"}
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
+      "id": 7,
+      "title": "Quorum Repair Operations",
+      "type": "graph",
+      "gridPos": {"x": 0, "y": 14, "w": 12, "h": 6},
+      "targets": [
+        {
+          "expr": "rate(edgefabric_quorum_repairs_triggered_total[1m])",
+          "legendFormat": "Repairs Triggered",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        },
+        {
+          "expr": "rate(edgefabric_quorum_version_conflicts_total[1m])",
+          "legendFormat": "Version Conflicts",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Failure Detector False Positives",
+      "type": "stat",
+      "gridPos": {"x": 12, "y": 14, "w": 6, "h": 6},
+      "targets": [
+        {
+          "expr": "rate(edgefabric_failure_detector_false_positives_total[5m])",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops",
+          "thresholds": {
+            "steps": [
+              {"value": 0, "color": "green"},
+              {"value": 0.01, "color": "yellow"},
+              {"value": 0.05, "color": "red"}
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 9,
+      "title": "Cluster DNS Resolutions",
+      "type": "graph",
+      "gridPos": {"x": 18, "y": 14, "w": 6, "h": 6},
+      "targets": [
+        {
+          "expr": "rate(edgefabric_cluster_dns_resolutions_total[1m])",
+          "legendFormat": "{{result}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Cluster Ring Size",
+      "type": "stat",
+      "gridPos": {"x": 0, "y": 20, "w": 6, "h": 4},
+      "targets": [
+        {
+          "expr": "edgefabric_cluster_ring_size",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "steps": [
+              {"value": 0, "color": "red"},
+              {"value": 3, "color": "yellow"},
+              {"value": 4, "color": "green"}
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 11,
+      "title": "Total Cache Size",
+      "type": "stat",
+      "gridPos": {"x": 6, "y": 20, "w": 6, "h": 4},
+      "targets": [
+        {
+          "expr": "sum(edgefabric_cache_size)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 12,
+      "title": "Cache Memory Used",
+      "type": "graph",
+      "gridPos": {"x": 12, "y": 20, "w": 12, "h": 6},
+      "targets": [
+        {
+          "expr": "edgefabric_cache_memory_used",
+          "legendFormat": "{{node_id}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      }
+    }
+  ]
+}

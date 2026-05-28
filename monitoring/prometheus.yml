@@ -1,0 +1,53 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+  external_labels:
+    cluster: 'edgefabric-hermes'
+    environment: 'production'
+
+# Rule files for recording rules and alerting rules
+rule_files:
+  - "prometheus-recording-rules.yml"
+  - "prometheus-alerts.yml"
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - localhost:9093
+
+scrape_configs:
+  # ── Cache nodes (EC2 production - DNS discovery via Cloud Map) ────────────
+  - job_name: edgefabric-cache
+    metrics_path: /actuator/prometheus
+    dns_sd_configs:
+      - names:
+          - cache-nodes.cache-cluster.internal
+        type: A
+        port: 8082
+        refresh_interval: 15s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+      - target_label: service
+        replacement: cache-node
+      - target_label: region
+        replacement: ap-south-1
+
+  # ── Load balancer (EC2 production - static config) ────────────────────────
+  - job_name: edgefabric-loadbalancer
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets:
+          - 10.0.11.146:8080
+        labels:
+          service: load-balancer
+          region: ap-south-1
+          instance: EF-hermes-loadbalancer
+
+  # ── Prometheus self-monitoring ────────────────────────────────────────────
+  - job_name: prometheus
+    static_configs:
+      - targets:
+          - localhost:9090

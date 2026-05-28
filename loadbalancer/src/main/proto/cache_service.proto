@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package edgefabric.cache.v1;
+
+option java_multiple_files = true;
+option java_package = "com.edgefabric.caching.grpc.proto";
+option java_outer_classname = "CacheServiceProto";
+
+// Mirror of caching/src/main/proto/cache_service.proto
+// Kept in sync intentionally — both modules generate stubs from identical contracts.
+service CacheService {
+  rpc GetCache (GetCacheRequest) returns (GetCacheResponse);
+  rpc PutCache (PutCacheRequest) returns (PutCacheResponse);
+}
+
+message GetCacheRequest {
+  string key = 1;
+}
+
+message GetCacheResponse {
+  bytes  data         = 1;
+  string content_type = 2;
+  int64  version      = 3;
+  int64  expires_at   = 4;
+}
+
+message PutCacheRequest {
+  string key          = 1;
+  bytes  data         = 2;
+  string content_type = 3;
+  int64  expires_at   = 4;
+  int64  version      = 5;
+}
+
+message PutCacheResponse {
+  bool  success    = 1;
+  int64 expires_at = 2;
+}
+

@@ -1,0 +1,171 @@
+=
+  EDGEFABRIC KEY MIGRATION — LIVE TEST REPORT
+  Generated: 2026-04-25 00:05:41 IST
+=
+
+[STEP 1] Cluster status
+  edgefabric-cache-node-2-1	Up 4 minutes (healthy)
+  edgefabric-cache-node-4-1	Up 3 minutes (healthy)
+  edgefabric-cache-node-1-1	Up 4 minutes (healthy)
+  edgefabric-cache-node-3-1	Up 4 minutes (healthy)
+
+[STEP 2] Stop node-4, wait for gossip to settle, seed 30 keys
+  node-4 stopped — waiting 12s for gossip to mark DEAD...
+  Keys written: 30/30
+
+[STEP 3] BEFORE distribution — 3 nodes with RF=3 (every node holds every key)
+  ┌────────────────┬─────────────┐
+  │ Node           │ Keys held   │
+  ├────────────────┼─────────────┤
+  │ cache-node-1   │  30/30       │
+  │ cache-node-2   │  30/30       │
+  │ cache-node-3   │  30/30       │
+  ├────────────────┼─────────────┤
+  │ TOTAL          │  90/90       │
+  └────────────────┴─────────────┘
+
+
+[STEP 4] Node-4 added — AFTER migration distribution
+  ┌────────────────┬────────────┐
+  │ Node           │ Keys held  │
+  ├────────────────┼────────────┤
+  │ cache-node-1   │  24/30      │
+  │ cache-node-2   │  19/30      │
+  │ cache-node-3   │  23/30      │
+  │ cache-node-4   │  24/30      │
+  ├────────────────┼────────────┤
+  │ TOTAL          │  90/90      │
+  └────────────────┴────────────┘
+
+[STEP 5] Per-key replica verification (should be exactly 3 each)
+  Keys with exactly 3 replicas : 30 / 30
+  KEYS MISSING REPLICAS:
+    mig-fresh-7  => 3 replicas
+    mig-fresh-12  => 3 replicas
+    mig-fresh-4  => 3 replicas
+    mig-fresh-24  => 3 replicas
+    mig-fresh-26  => 3 replicas
+    mig-fresh-25  => 3 replicas
+    mig-fresh-22  => 3 replicas
+    mig-fresh-15  => 3 replicas
+    mig-fresh-1  => 3 replicas
+    mig-fresh-14  => 3 replicas
+    mig-fresh-3  => 3 replicas
+    mig-fresh-21  => 3 replicas
+    mig-fresh-8  => 3 replicas
+    mig-fresh-9  => 3 replicas
+    mig-fresh-27  => 3 replicas
+    mig-fresh-13  => 3 replicas
+    mig-fresh-6  => 3 replicas
+    mig-fresh-28  => 3 replicas
+    mig-fresh-18  => 3 replicas
+    mig-fresh-16  => 3 replicas
+    mig-fresh-29  => 3 replicas
+    mig-fresh-17  => 3 replicas
+    mig-fresh-11  => 3 replicas
+    mig-fresh-19  => 3 replicas
+    mig-fresh-20  => 3 replicas
+    mig-fresh-23  => 3 replicas
+    mig-fresh-2  => 3 replicas
+    mig-fresh-10  => 3 replicas
+    mig-fresh-30  => 3 replicas
+    mig-fresh-5  => 3 replicas
+
+[STEP 6] Load-balancer read verification
+  LB can read : 30 / 30 keys
+
+[STEP 7] Migration log evidence per node
+  cache-node-1 : seeded=23  migrated=26  topology-events=7
+  cache-node-2 : seeded=12  migrated=31  topology-events=7
+  cache-node-3 : seeded=39  migrated=23  topology-events=7
+  cache-node-4 : seeded=0  migrated=0  topology-events=9
+
+  Detailed migration lines:
+  --- cache-node-1 ---
+    2026-04-24 18:36:26.150 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:mig-fresh-13
+    2026-04-24 18:36:26.158 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:mig-fresh-14
+    2026-04-24 18:36:26.167 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-30
+    2026-04-24 18:36:26.179 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-1
+    2026-04-24 18:36:26.189 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:mig-fresh-2
+    2026-04-24 18:36:26.197 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-18
+    2026-04-24 18:36:26.205 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-16
+    2026-04-24 18:36:26.214 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:mig-fresh-29
+    2026-04-24 18:36:26.222 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-27
+    2026-04-24 18:36:26.231 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-28
+    2026-04-24 18:36:26.242 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-23
+    2026-04-24 18:36:26.250 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-24
+    2026-04-24 18:36:26.260 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-4
+    2026-04-24 18:36:26.270 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:mig-fresh-6
+    2026-04-24 18:36:26.280 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:mig-fresh-9
+    2026-04-24 18:37:05.980 [tomcat-handler-604] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 57
+    2026-04-24 18:37:06.072 [tomcat-handler-609] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 57
+    2026-04-24 18:37:06.232 [tomcat-handler-615] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 57
+    2026-04-24 18:37:06.255 [tomcat-handler-617] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 57
+    2026-04-24 18:37:06.579 [tomcat-handler-629] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 58
+  --- cache-node-2 ---
+    2026-04-24 18:36:26.509 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-29
+    2026-04-24 18:36:26.519 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:mig-fresh-23
+    2026-04-24 18:36:26.549 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:mig-fresh-27
+    2026-04-24 18:36:26.559 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-21
+    2026-04-24 18:36:26.569 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-22
+    2026-04-24 18:36:26.579 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-20
+    2026-04-24 18:36:26.599 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-5
+    2026-04-24 18:36:26.606 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-12
+    2026-04-24 18:36:26.616 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-25
+    2026-04-24 18:36:26.624 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:mig-fresh-18
+    2026-04-24 18:37:06.028 [tomcat-handler-585] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 57
+    2026-04-24 18:37:06.170 [tomcat-handler-591] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 57
+    2026-04-24 18:37:06.188 [tomcat-handler-593] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 57
+    2026-04-24 18:37:06.323 [tomcat-handler-598] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 57
+    2026-04-24 18:37:06.354 [tomcat-handler-600] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 57
+    2026-04-24 18:37:06.435 [tomcat-handler-607] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 58
+    2026-04-24 18:37:06.454 [tomcat-handler-609] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 58
+    2026-04-24 18:37:06.536 [tomcat-handler-615] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 58
+    2026-04-24 18:37:06.560 [tomcat-handler-617] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 58
+    2026-04-24 18:37:06.597 [tomcat-handler-619] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 58
+  --- cache-node-3 ---
+    2026-04-24 18:36:21.782 [migration-worker] INFO  c.e.c.migration.MigrationWorker - Migration complete: 40 success, 0 failed, 0 skipped
+    2026-04-24 18:36:26.155 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:mig-fresh-25
+    2026-04-24 18:36:26.162 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:mig-fresh-26
+    2026-04-24 18:36:26.172 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:mig-fresh-19
+    2026-04-24 18:36:26.419 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-9
+    2026-04-24 18:36:26.466 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-6
+    2026-04-24 18:36:26.489 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:mig-fresh-16
+    2026-04-24 18:36:26.521 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-2
+    2026-04-24 18:36:26.529 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:mig-fresh-7
+    2026-04-24 18:36:26.579 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-10
+    2026-04-24 18:36:26.598 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-13
+    2026-04-24 18:36:26.725 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-26
+    2026-04-24 18:36:26.765 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:mig-fresh-8
+    2026-04-24 18:36:26.772 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:mig-fresh-3
+    2026-04-24 18:36:26.781 [migration-delete-scheduler] DEBUG c.e.c.migration.MigrationWorker - Migrated and deleted local key: default:migration-test-17
+    2026-04-24 18:37:06.003 [tomcat-handler-598] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 57
+    2026-04-24 18:37:06.093 [tomcat-handler-602] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 57
+    2026-04-24 18:37:06.120 [tomcat-handler-604] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 57
+    2026-04-24 18:37:06.303 [tomcat-handler-612] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 58
+    2026-04-24 18:37:06.517 [tomcat-handler-619] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 58
+  --- cache-node-4 ---
+    2026-04-24 18:36:21.545 [tomcat-handler-41] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 38
+    2026-04-24 18:36:21.545 [tomcat-handler-40] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 38
+    2026-04-24 18:36:21.555 [tomcat-handler-42] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 50
+    2026-04-24 18:36:21.555 [tomcat-handler-43] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 50
+    2026-04-24 18:36:21.565 [tomcat-handler-45] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 50
+    2026-04-24 18:36:21.565 [tomcat-handler-44] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 50
+    2026-04-24 18:36:21.575 [tomcat-handler-47] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 50
+    2026-04-24 18:36:21.584 [tomcat-handler-48] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 38
+    2026-04-24 18:36:21.603 [tomcat-handler-51] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 38
+    2026-04-24 18:36:21.613 [tomcat-handler-52] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 38
+    2026-04-24 18:36:21.624 [tomcat-handler-53] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 38
+    2026-04-24 18:36:21.634 [tomcat-handler-54] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 50
+    2026-04-24 18:36:21.644 [tomcat-handler-55] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 38
+    2026-04-24 18:36:21.657 [tomcat-handler-56] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 50
+    2026-04-24 18:36:21.731 [tomcat-handler-63] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 50
+    2026-04-24 18:36:21.741 [tomcat-handler-64] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 50
+    2026-04-24 18:36:21.751 [tomcat-handler-65] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 38
+    2026-04-24 18:37:06.058 [tomcat-handler-196] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 39
+    2026-04-24 18:37:06.285 [tomcat-handler-205] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 40
+    2026-04-24 18:37:06.473 [tomcat-handler-212] DEBUG c.e.c.s.TimeWheelEvictionService - Stored on bucket 40
+
+[RESULT] PASS — Migration is working correctly
+
+======================================================================

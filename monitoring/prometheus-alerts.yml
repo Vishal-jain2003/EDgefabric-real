@@ -1,0 +1,126 @@
+groups:
+  - name: edgefabric_slo_alerts
+    interval: 30s
+    rules:
+      # CRITICAL: Cache error rate above 5% for 2 minutes
+      - alert: HighCacheErrorRate
+        expr: |
+          (
+            sum(rate(edgefabric_cache_misses_total[1m]))
+            /
+            (sum(rate(edgefabric_cache_hits_total[1m])) + sum(rate(edgefabric_cache_misses_total[1m])))
+          ) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+          component: cache
+        annotations:
+          summary: "Cache error rate above 5% SLO threshold"
+          description: "Cache miss rate is {{ $value | humanizePercentage }} (threshold: 5%). This impacts cache availability SLO."
+          runbook: "https://wiki.edgefabric.io/runbooks/HighErrorRate"
+
+      # CRITICAL: Cache node down
+      - alert: CacheNodeDown
+        expr: up{job="edgefabric-cache"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: cache
+        annotations:
+          summary: "Cache node {{ $labels.instance }} is down"
+          description: "Node {{ $labels.instance }} has been unreachable for 1 minute."
+          runbook: "https://wiki.edgefabric.io/runbooks/NodeDown"
+
+      # CRITICAL: Quorum writes failing
+      - alert: QuorumWritesNotMet
+        expr: rate(edgefabric_quorum_writes_total{result="quorum_not_met"}[1m]) > 0
+        for: 30s
+        labels:
+          severity: critical
+          component: quorum
+        annotations:
+          summary: "Quorum write failures detected"
+          description: "{{ $value | humanize }} quorum write failures per second. Data durability is at risk."
+          runbook: "https://wiki.edgefabric.io/runbooks/QuorumNotMet"
+
+      # CRITICAL: Gossip partition detected
+      - alert: GossipPartitionDetected
+        expr: edgefabric_gossip_reachable_nodes < 1
+        for: 2m
+        labels:
+          severity: critical
+          component: gossip
+        annotations:
+          summary: "Gossip protocol partition detected on {{ $labels.instance }}"
+          description: "Node {{ $labels.instance }} can only see {{ $value }} other reachable node(s). Network partition or cluster failure."
+          runbook: "https://wiki.edgefabric.io/runbooks/GossipPartition"
+
+      # WARNING: High memory usage (>80% of 50MB limit)
+      - alert: HighMemoryUsage
+        expr: (edgefabric_cache_memory_used / 10737418240) > 0.80
+        for: 5m
+        labels:
+          severity: warning
+          component: cache
+        annotations:
+          summary: "Cache memory usage above 80%"
+          description: "Memory usage is {{ $value | humanizePercentage }} of 10GB limit on {{ $labels.instance }}."
+          runbook: "https://wiki.edgefabric.io/runbooks/HighMemoryUsage"
+
+      # WARNING: Cluster sync errors
+      - alert: ClusterSyncFailures
+        expr: rate(edgefabric_cluster_sync_errors_total[5m]) > 0.1
+        for: 3m
+        labels:
+          severity: warning
+          component: cluster
+        annotations:
+          summary: "Cluster synchronization failures detected"
+          description: "{{ $value | humanize }} sync errors per second. Hash ring may be stale."
+          runbook: "https://wiki.edgefabric.io/runbooks/ClusterSyncFailures"
+
+
+      # WARNING: Cache eviction spike
+      - alert: CacheEvictionSpike
+        expr: rate(edgefabric_cache_evictions_total[2m]) > 100
+        for: 3m
+        labels:
+          severity: warning
+          component: cache
+        annotations:
+          summary: "High cache eviction rate detected"
+          description: "{{ $value | humanize }} evictions per second. Check memory pressure or TTL configuration."
+          runbook: "https://wiki.edgefabric.io/runbooks/CacheEvictionSpike"
+
+      # WARNING: Possible TTL misconfiguration (>30% miss rate sustained)
+      - alert: SustainedHighMissRate
+        expr: |
+          (
+            sum(rate(edgefabric_cache_misses_total[5m]))
+            /
+            (sum(rate(edgefabric_cache_hits_total[5m])) + sum(rate(edgefabric_cache_misses_total[5m])))
+          ) > 0.30
+        for: 10m
+        labels:
+          severity: warning
+          component: cache
+        annotations:
+          summary: "Sustained cache miss rate above 30%"
+          description: "Cache miss rate is {{ $value | humanizePercentage }} over 5 minutes. Check TTL settings or cache warm-up."
+          runbook: "https://wiki.edgefabric.io/runbooks/TTLMisconfiguration"
+
+      # CRITICAL: Burn rate alert for availability SLO (5m window for local testing)
+      - alert: AvailabilitySLOBurnRateHigh
+        expr: |
+          (
+            (1 - avg_over_time(up{job=~"edgefabric-.*"}[5m]))
+            / (1 - 0.999)
+          ) > 14.4
+        for: 2m
+        labels:
+          severity: critical
+          component: slo
+        annotations:
+          summary: "Availability SLO burn rate exceeds 14.4x"
+          description: "Service {{ $labels.job }} unavailability at {{ $value }}x burn rate. At this rate, the 99.9% availability SLO will be exhausted in < 2 days."
+          runbook: "https://wiki.edgefabric.io/runbooks/HighErrorRate"

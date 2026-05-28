@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.1</version>
+        <relativePath/> </parent>
+
+    <groupId>com.edgefabric</groupId>
+    <artifactId>edgefabric-parent</artifactId>
+    <version>1.7.0</version>
+    <packaging>pom</packaging>
+    <name>EdgeFabric Parent</name>
+    <description>Parent POM for EdgeFabric multi-module project</description>
+
+    <modules>
+
+        <module>caching</module>
+        <module>registry</module>
+        <module>consistent-hashing</module>
+        <module>loadbalancer</module>
+        <module>testing_edgefabric</module>
+        <module>agentic-ops</module>
+
+    </modules>
+
+    <properties>
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <!-- JaCoCo line-coverage minimum enforced by `mvn verify` in each module.
+             Override for spike branches: `mvn verify -Dcoverage.minimum=0.50`. -->
+        <coverage.minimum>0.80</coverage.minimum>
+        <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
+    </properties>
+    <dependencies>
+        <!-- Structured JSON logging -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>${logstash-logback-encoder.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>

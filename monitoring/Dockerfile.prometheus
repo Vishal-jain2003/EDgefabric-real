@@ -1,0 +1,19 @@
+FROM prom/prometheus:latest
+
+# Copy custom prometheus.yml with EC2 production targets (DNS discovery)
+COPY prometheus.yml /etc/prometheus/prometheus.yml
+COPY prometheus-recording-rules.yml /etc/prometheus/prometheus-recording-rules.yml
+COPY prometheus-alerts.yml /etc/prometheus/prometheus-alerts.yml
+
+# Prometheus data directory
+VOLUME /prometheus
+
+# Expose Prometheus port
+EXPOSE 9090
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:9090/-/healthy || exit 1
+
+# Use default entrypoint from base image
+# Runs: prometheus --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus --storage.tsdb.retention.time=30d

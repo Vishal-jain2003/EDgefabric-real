@@ -1,0 +1,16 @@
+# Exclude everything not needed by any Dockerfile build context
+.git
+.github
+.gitlab
+.codemie
+mcp-servers
+ui
+performance-tests
+*.md
+*.txt
+*.json
+*.msi
+.claude
+Jenkinsfile
+docker-compose*.yml
+monitoring/dashboards

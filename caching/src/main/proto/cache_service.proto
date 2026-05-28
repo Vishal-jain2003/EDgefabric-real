@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package edgefabric.cache.v1;
+
+option java_multiple_files = true;
+option java_package = "com.edgefabric.caching.grpc.proto";
+option java_outer_classname = "CacheServiceProto";
+
+// Internal cache RPC contract used by the load balancer to perform
+// quorum reads and writes against cache nodes. Mirrors the existing
+// HTTP GET/PUT /api/v1/internal/cache/{key} endpoints.
+service CacheService {
+  // Fetch a single cache entry from this node's local store.
+  // Errors are surfaced via gRPC status codes:
+  //   NOT_FOUND          – key missing
+  //   FAILED_PRECONDITION – key present but expired (expires_at returned in trailers via response)
+  //   UNAVAILABLE        – node is draining and grace period expired
+  rpc GetCache (GetCacheRequest) returns (GetCacheResponse);
+
+  // Store a cache entry on this node.
+  // Errors are surfaced via gRPC status codes:
+  //   INVALID_ARGUMENT   – key is empty
+  //   UNAVAILABLE        – node is draining and grace period expired
+  //   INTERNAL           – unexpected server error
+  rpc PutCache (PutCacheRequest) returns (PutCacheResponse);
+}
+
+message GetCacheRequest {
+  string key = 1;
+}
+
+message GetCacheResponse {
+  bytes  data         = 1;  // raw payload
+  string content_type = 2;  // MIME type (e.g. "application/octet-stream")
+  int64  version      = 3;  // X-Quorum-Version equivalent
+  int64  expires_at   = 4;  // epoch millis
+}
+
+message PutCacheRequest {
+  string key          = 1;
+  bytes  data         = 2;
+  string content_type = 3;
+  int64  expires_at   = 4;  // epoch millis (absolute expiry)
+  int64  version      = 5;  // quorum version for optimistic concurrency
+}
+
+message PutCacheResponse {
+  bool  success    = 1;
+  int64 expires_at = 2;  // applied expires_at (may be adjusted by cache node)
+}
+
