@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdgeFabric Interview Study Guide</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --card: #21253a;
+    --border: #2d3250; --accent: #7c83fd; --accent2: #56cfb2;
+    --accent3: #f7c59f; --text: #e2e8f0; --muted: #8892b0;
+    --danger: #ff6b6b; --success: #56cfb2; --warn: #f7c59f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
+
+  /* NAV */
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; gap: 0; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; }
+  nav .logo { color: var(--accent); font-weight: 700; font-size: 1.1rem; padding: 1rem 1.5rem 1rem 0; border-right: 1px solid var(--border); margin-right: 0.5rem; white-space: nowrap; }
+  nav button { background: none; border: none; color: var(--muted); padding: 1rem 1.1rem; cursor: pointer; font-size: 0.88rem; font-weight: 500; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
+  nav button:hover { color: var(--text); }
+  nav button.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* SECTIONS */
+  .section { display: none; max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+  .section.active { display: block; }
+
+  /* CARDS */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .card h2 { color: var(--accent); font-size: 1.2rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+  .card h3 { color: var(--accent2); font-size: 1rem; margin: 1rem 0 0.5rem; }
+  .card p { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  /* CODE */
+  pre { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.5; margin: 0.75rem 0; }
+  code { font-family: 'Cascadia Code', 'Fira Code', monospace; }
+  .kw { color: #ff79c6; } .cls { color: #56b6c2; } .str { color: #98c379; }
+  .cm { color: #5c6370; font-style: italic; } .num { color: #d19a66; }
+  .ann { color: #e5c07b; } .fn { color: #61afef; }
+
+  /* GRID */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
+  @media(max-width:800px) { .grid2,.grid3 { grid-template-columns:1fr; } nav { overflow-x: auto; } }
+
+  /* BADGES */
+  .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+  .badge-blue { background: rgba(124,131,253,0.15); color: var(--accent); }
+  .badge-green { background: rgba(86,207,178,0.15); color: var(--accent2); }
+  .badge-orange { background: rgba(247,197,159,0.15); color: var(--accent3); }
+  .badge-red { background: rgba(255,107,107,0.15); color: var(--danger); }
+
+  /* Q&A */
+  .qa { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 0.75rem; overflow: hidden; }
+  .qa-q { background: var(--surface); padding: 0.9rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; font-weight: 500; transition: background 0.2s; }
+  .qa-q:hover { background: var(--card); }
+  .qa-q .arrow { color: var(--accent); transition: transform 0.3s; font-size: 0.75rem; }
+  .qa-q.open .arrow { transform: rotate(180deg); }
+  .qa-a { display: none; padding: 1rem 1.2rem; background: var(--card); border-top: 1px solid var(--border); font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+  .qa-a.open { display: block; }
+  .qa-a strong { color: var(--text); }
+  .qa-a ul { margin: 0.5rem 0 0.5rem 1.2rem; }
+  .qa-a li { margin-bottom: 0.3rem; }
+
+  /* RING DIAGRAM */
+  .ring-container { display: flex; justify-content: center; align-items: center; padding: 1rem; }
+  svg text { font-family: 'Segoe UI', sans-serif; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { background: var(--surface); color: var(--accent); padding: 0.6rem 0.8rem; text-align: left; border: 1px solid var(--border); }
+  td { padding: 0.55rem 0.8rem; border: 1px solid var(--border); color: var(--muted); }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  /* FLOW */
+  .flow { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; margin: 0.75rem 0; }
+  .flow-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.4rem 0.8rem; font-size: 0.8rem; color: var(--text); }
+  .flow-arrow { color: var(--accent); font-size: 0.9rem; }
+
+  /* HIGHLIGHT BOX */
+  .highlight { background: rgba(124,131,253,0.08); border-left: 3px solid var(--accent); padding: 0.75rem 1rem; border-radius: 0 8px 8px 0; margin: 0.75rem 0; font-size: 0.88rem; }
+  .warn-box { background: rgba(247,197,159,0.08); border-left: 3px solid var(--accent3); padding: 0.75rem 1rem; border-radius: 0 8px 8px 0; margin: 0.75rem 0; font-size: 0.88rem; color: var(--muted); }
+
+  /* PROGRESS */
+  .stat-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; flex: 1; min-width: 100px; }
+  .stat .val { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+  .stat .lbl { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* STEP LIST */
+  .steps { counter-reset: step; }
+  .step { display: flex; gap: 1rem; margin-bottom: 1rem; align-items: flex-start; }
+  .step-num { background: var(--accent); color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; margin-top: 0.1rem; }
+  .step-body { font-size: 0.88rem; color: var(--muted); }
+  .step-body strong { color: var(--text); display: block; margin-bottom: 0.2rem; }
+
+  /* INTERACTIVE RING */
+  #ring-demo { position: relative; }
+  .ring-btn { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 0.5rem 1.2rem; cursor: pointer; font-size: 0.85rem; margin: 0.4rem; transition: opacity 0.2s; }
+  .ring-btn:hover { opacity: 0.85; }
+  .ring-btn.danger { background: var(--danger); }
+  #ring-log { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.78rem; font-family: monospace; height: 90px; overflow-y: auto; margin-top: 0.75rem; color: var(--accent2); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">⚡ EdgeFabric</div>
+  <button class="active" onclick="show('arch')">Architecture</button>
+  <button onclick="show('hashing')">Consistent Hashing</button>
+  <button onclick="show('migration')">Key Migration</button>
+  <button onclick="show('gossip')">Gossip & FD</button>
+  <button onclick="show('quorum')">Quorum Ops</button>
+  <button onclick="show('eviction')">Eviction</button>
+  <button onclick="show('deploy')">Deploy & Ops</button>
+  <button onclick="show('qa')">Q&amp;A Bank</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════ ARCHITECTURE ═══ -->
+<div id="arch" class="section active">
+  <div class="card">
+    <h2>🏗 System Architecture Overview</h2>
+    <p>EdgeFabric is a distributed caching &amp; load-balancing platform built with Java 21 / Spring Boot 3.</p>
+
+    <div class="stat-row">
+      <div class="stat"><div class="val">4</div><div class="lbl">Modules</div></div>
+      <div class="stat"><div class="val">150</div><div class="lbl">Virtual Nodes</div></div>
+      <div class="stat"><div class="val">N=3 W=2 R=2</div><div class="lbl">Quorum Config</div></div>
+      <div class="stat"><div class="val">7946</div><div class="lbl">Gossip UDP Port</div></div>
+    </div>
+
+    <div class="ring-container">
+      <svg width="680" height="340" viewBox="0 0 680 340">
+        <!-- Background -->
+        <rect width="680" height="340" fill="#0f1117" rx="12"/>
+
+        <!-- Client -->
+        <rect x="20" y="135" width="90" height="50" rx="8" fill="#21253a" stroke="#7c83fd" stroke-width="1.5"/>
+        <text x="65" y="155" fill="#e2e8f0" text-anchor="middle" font-size="11" font-weight="600">Client</text>
+        <text x="65" y="173" fill="#8892b0" text-anchor="middle" font-size="9">HTTP</text>
+
+        <!-- Arrow to LB -->
+        <path d="M110 160 L170 160" stroke="#7c83fd" stroke-width="1.5" marker-end="url(#arr)"/>
+        <text x="140" y="152" fill="#7c83fd" text-anchor="middle" font-size="9">:8080</text>
+
+        <!-- Load Balancer -->
+        <rect x="170" y="115" width="110" height="90" rx="8" fill="#21253a" stroke="#7c83fd" stroke-width="2"/>
+        <text x="225" y="140" fill="#7c83fd" text-anchor="middle" font-size="12" font-weight="700">Load</text>
+        <text x="225" y="155" fill="#7c83fd" text-anchor="middle" font-size="12" font-weight="700">Balancer</text>
+        <text x="225" y="172" fill="#8892b0" text-anchor="middle" font-size="9">Consistent Hash</text>
+        <text x="225" y="185" fill="#8892b0" text-anchor="middle" font-size="9">Quorum Ops</text>
+        <text x="225" y="198" fill="#56cfb2" text-anchor="middle" font-size="9">port 8080</text>
+
+        <!-- Arrows to cache nodes -->
+        <path d="M280 140 L360 90" stroke="#56cfb2" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arr2)"/>
+        <path d="M280 160 L360 160" stroke="#56cfb2" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arr2)"/>
+        <path d="M280 180 L360 230" stroke="#56cfb2" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arr2)"/>
+
+        <!-- Cache Nodes -->
+        <rect x="360" y="55" width="100" height="65" rx="8" fill="#21253a" stroke="#56cfb2" stroke-width="1.5"/>
+        <text x="410" y="76" fill="#56cfb2" text-anchor="middle" font-size="11" font-weight="600">Cache Node 1</text>
+        <text x="410" y="91" fill="#8892b0" text-anchor="middle" font-size="9">:8082</text>
+        <text x="410" y="106" fill="#8892b0" text-anchor="middle" font-size="9">Gossip :7946</text>
+        <text x="410" y="114" fill="#8892b0" text-anchor="middle" font-size="9">FD :7000</text>
+
+        <rect x="360" y="130" width="100" height="65" rx="8" fill="#21253a" stroke="#56cfb2" stroke-width="1.5"/>
+        <text x="410" y="151" fill="#56cfb2" text-anchor="middle" font-size="11" font-weight="600">Cache Node 2</text>
+        <text x="410" y="166" fill="#8892b0" text-anchor="middle" font-size="9">:8082</text>
+        <text x="410" y="181" fill="#8892b0" text-anchor="middle" font-size="9">Gossip :7946</text>
+        <text x="410" y="189" fill="#8892b0" text-anchor="middle" font-size="9">FD :7000</text>
+
+        <rect x="360" y="205" width="100" height="65" rx="8" fill="#21253a" stroke="#56cfb2" stroke-width="1.5"/>
+        <text x="410" y="226" fill="#56cfb2" text-anchor="middle" font-size="11" font-weight="600">Cache Node 3</text>
+        <text x="410" y="241" fill="#8892b0" text-anchor="middle" font-size="9">:8082</text>
+        <text x="410" y="256" fill="#8892b0" text-anchor="middle" font-size="9">Gossip :7946</text>
+        <text x="410" y="264" fill="#8892b0" text-anchor="middle" font-size="9">FD :7000</text>
+
+        <!-- Gossip arrows between nodes -->
+        <path d="M460 88 Q510 88 510 160 L460 160" stroke="#f7c59f" stroke-width="1" stroke-dasharray="3,3" fill="none"/>
+        <path d="M460 160 Q510 160 510 237 L460 237" stroke="#f7c59f" stroke-width="1" stroke-dasharray="3,3" fill="none"/>
+        <text x="520" y="170" fill="#f7c59f" font-size="9">Gossip</text>
+
+        <!-- AWS Cloud Map -->
+        <rect x="510" y="115" width="110" height="50" rx="8" fill="#21253a" stroke="#f7c59f" stroke-width="1.5"/>
+        <text x="565" y="136" fill="#f7c59f" text-anchor="middle" font-size="11" font-weight="600">Cloud Map</text>
+        <text x="565" y="151" fill="#8892b0" text-anchor="middle" font-size="9">Service Discovery</text>
+        <text x="565" y="162" fill="#8892b0" text-anchor="middle" font-size="9">DNS Registration</text>
+
+        <!-- LB to Cloud Map -->
+        <path d="M280 130 Q400 50 510 130" stroke="#f7c59f" stroke-width="1" stroke-dasharray="3,3" fill="none"/>
+        <text x="390" y="55" fill="#f7c59f" font-size="9">DNS Resolve</text>
+
+        <!-- Defs -->
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#7c83fd"/>
+          </marker>
+          <marker id="arr2" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#56cfb2"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2>📦 Modules</h2>
+      <table>
+        <tr><th>Module</th><th>Port</th><th>Role</th></tr>
+        <tr><td><code>loadbalancer/</code></td><td class="badge badge-blue">8080</td><td>HTTP gateway, consistent hash routing, quorum ops</td></tr>
+        <tr><td><code>caching/</code></td><td class="badge badge-green">8082</td><td>Cache nodes, gossip membership, LRU + TTL eviction</td></tr>
+        <tr><td><code>consistent-hashing/</code></td><td>lib</td><td>Shared ring library — ConcurrentSkipListMap + virtual nodes</td></tr>
+        <tr><td><code>registry/</code></td><td>EC2</td><td>Service registry — separate EC2 deploy</td></tr>
+        <tr><td><code>ui/</code></td><td>—</td><td>Frontend dashboard</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>⚙️ Tech Stack</h2>
+      <table>
+        <tr><th>Layer</th><th>Technology</th></tr>
+        <tr><td>Runtime</td><td>Java 21, Spring Boot 3.x</td></tr>
+        <tr><td>Reactive</td><td>Project Reactor, Spring WebFlux / WebClient</td></tr>
+        <tr><td>Hashing</td><td>XXHash (zero-allocation), MurmurHash3 fallback</td></tr>
+        <tr><td>Gossip</td><td>Custom UDP, port 7946</td></tr>
+        <tr><td>FD</td><td>SWIM-style PING/PING_REQ, port 7000</td></tr>
+        <tr><td>Cloud</td><td>AWS EC2 + SSM + Cloud Map (no ECS/ECR)</td></tr>
+        <tr><td>Images</td><td>Docker Hub — anubhavpratap/*</td></tr>
+        <tr><td>CI/CD</td><td>Jenkins + SonarQube + Maven</td></tr>
+        <tr><td>Observability</td><td>Prometheus, Grafana, Loki, Tempo</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔄 Request Flow — Cache PUT</h2>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Client → Load Balancer (POST /api/v1/cache/{key})</strong>Tenant + key + data + TTL sent to LB on port 8080</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><strong>CacheRouter routes key</strong>ConsistentHashRing.getNodes(key, N=3) returns 3 replica nodes</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><strong>QuorumService.quorumWriteWithMetadata()</strong>Sends PUT in parallel to all 3 nodes via reactive WebClient. Assigns monotonic version number.</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Wait for W=2 acks</strong>Takes first 2 successful responses. Returns 201 to client.</div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-body"><strong>WAL Append</strong>CacheGatewayService appends WalEntry (key, data, version, failedNodes) to WAL for anti-entropy. WAL failures never propagate.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ HASHING ═══ -->
+<div id="hashing" class="section">
+  <div class="card">
+    <h2>🔵 Consistent Hash Ring — Deep Dive</h2>
+    <div class="highlight">The core data structure is a <strong>ConcurrentSkipListMap&lt;Long, HashableNode&gt;</strong> — keys are virtual node hash positions, values are physical nodes. Skip list gives O(log n) ceiling lookup (finding next node clockwise).</div>
+
+    <div class="grid2">
+      <div>
+        <h3>Why Consistent Hashing?</h3>
+        <p>With simple modulo hashing (key % N), adding/removing a node remaps ~all keys. Consistent hashing remaps only K/N keys on average — only the keys that "belonged" to the changed node move.</p>
+        <div class="warn-box">Problem: 4 nodes → 5 nodes: only 1/5 of keys migrate. Modulo: ~80% of keys would move.</div>
+      </div>
+      <div>
+        <h3>Virtual Nodes (150 per physical)</h3>
+        <p>Each physical node gets 150 virtual positions on the ring. Without vnodes, uneven distribution is guaranteed when nodes have similar hashes. Vnodes interleave all nodes evenly.</p>
+        <div class="highlight">Total ring positions = 150 × N physical nodes. Each virtual node is hashed as <code>"nodeId#vnode-0"</code>, <code>"nodeId#vnode-1"</code>, etc.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>💻 Core Implementation</h2>
+    <pre><code><span class="ann">@Component</span>
+<span class="kw">public class</span> <span class="cls">ConsistentHashRing</span>&lt;T <span class="kw">extends</span> <span class="cls">HashableNode</span>&gt; {
+    <span class="kw">private final</span> <span class="cls">ConcurrentSkipListMap</span>&lt;<span class="cls">Long</span>, T&gt; ring = <span class="kw">new</span> <span class="cls">ConcurrentSkipListMap</span>&lt;&gt;();
+    <span class="kw">private final</span> <span class="cls">StampedLock</span> lock = <span class="kw">new</span> <span class="cls">StampedLock</span>();  <span class="cm">// optimistic reads</span>
+    <span class="kw">private final int</span> virtualNodes = <span class="num">150</span>;
+
+    <span class="kw">public void</span> <span class="fn">addNode</span>(T node) {
+        <span class="kw">long</span> stamp = lock.<span class="fn">writeLock</span>();
+        <span class="kw">try</span> {
+            <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; virtualNodes; i++) {
+                <span class="kw">long</span> hash = hashProvider.<span class="fn">hash</span>(node.<span class="fn">nodeId</span>() + <span class="str">"#vnode-"</span> + i);
+                ring.<span class="fn">put</span>(hash, node);
+            }
+        } <span class="kw">finally</span> { lock.<span class="fn">unlockWrite</span>(stamp); }
+    }
+
+    <span class="kw">public</span> T <span class="fn">getNode</span>(<span class="cls">String</span> key) {
+        <span class="kw">long</span> stamp = lock.<span class="fn">tryOptimisticRead</span>();   <span class="cm">// optimistic — no lock</span>
+        T result = <span class="fn">lookupNode</span>(key);
+        <span class="kw">if</span> (!lock.<span class="fn">validate</span>(stamp)) {              <span class="cm">// concurrent write happened</span>
+            stamp = lock.<span class="fn">readLock</span>();              <span class="cm">// fall back to real read lock</span>
+            <span class="kw">try</span> { result = <span class="fn">lookupNode</span>(key); }
+            <span class="kw">finally</span> { lock.<span class="fn">unlockRead</span>(stamp); }
+        }
+        <span class="kw">return</span> result;
+    }
+
+    <span class="kw">private</span> T <span class="fn">lookupNode</span>(<span class="cls">String</span> key) {
+        <span class="kw">long</span> hash = hashProvider.<span class="fn">hash</span>(key);
+        <span class="cls">Map.Entry</span>&lt;<span class="cls">Long</span>, T&gt; entry = ring.<span class="fn">ceilingEntry</span>(hash);  <span class="cm">// walk clockwise</span>
+        <span class="kw">return</span> entry != <span class="kw">null</span> ? entry.<span class="fn">getValue</span>() : ring.<span class="fn">firstEntry</span>().<span class="fn">getValue</span>(); <span class="cm">// wrap around</span>
+    }
+}</code></pre>
+  </div>
+
+  <div class="card" id="ring-demo">
+    <h2>🎮 Interactive Ring Demo</h2>
+    <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center; margin-bottom:1rem;">
+      <button class="ring-btn" onclick="addNodeDemo()">+ Add Node</button>
+      <button class="ring-btn danger" onclick="removeNodeDemo()">− Remove Node</button>
+      <button class="ring-btn" onclick="lookupDemo()">🔍 Lookup Key</button>
+      <span style="color:var(--muted); font-size:0.82rem;">Nodes: <span id="node-count">3</span> | Ring positions: <span id="vnode-count">450</span></span>
+    </div>
+    <svg id="ring-svg" width="420" height="300" viewBox="0 0 420 300">
+      <rect width="420" height="300" fill="#0d1117" rx="10"/>
+      <circle cx="210" cy="150" r="100" fill="none" stroke="#2d3250" stroke-width="1.5"/>
+      <text x="210" y="155" fill="#8892b0" text-anchor="middle" font-size="11">Consistent Hash Ring</text>
+    </svg>
+    <div id="ring-log">Ring initialized with 3 nodes × 150 vnodes = 450 ring positions
+</div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2>🏎 XXHash vs MurmurHash3</h2>
+      <table>
+        <tr><th>Property</th><th>XXHash (default)</th><th>MurmurHash3</th></tr>
+        <tr><td>Speed</td><td class="badge badge-green">~10x faster</td><td>Fast</td></tr>
+        <tr><td>Allocations</td><td class="badge badge-green">Zero-allocation</td><td>Some GC</td></tr>
+        <tr><td>Distribution</td><td>Excellent</td><td>Excellent</td></tr>
+        <tr><td>Library</td><td>net.openhft zero-alloc</td><td>Guava</td></tr>
+        <tr><td>Use case</td><td>Production default</td><td>Fallback</td></tr>
+      </table>
+      <div class="highlight" style="margin-top:1rem;">Zero-allocation means no new heap objects per hash call — critical at high throughput to avoid GC pressure.</div>
+    </div>
+    <div class="card">
+      <h2>⚖️ StampedLock vs ReadWriteLock</h2>
+      <table>
+        <tr><th>Property</th><th>StampedLock</th><th>ReadWriteLock</th></tr>
+        <tr><td>Optimistic read</td><td class="badge badge-green">Yes — no lock</td><td>No</td></tr>
+        <tr><td>Read contention</td><td>Near-zero</td><td>Lock needed</td></tr>
+        <tr><td>Write starvation</td><td>Possible</td><td>Fairer</td></tr>
+        <tr><td>Usage here</td><td>Reads: optimistic first → fallback</td><td>—</td></tr>
+      </table>
+      <div class="warn-box">addNode/removeNode are write-heavy but infrequent (topology changes). getNode is called per request — must be fast. Optimistic read avoids any lock in the common case.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ KEY MIGRATION ═══ -->
+<div id="migration" class="section">
+  <div class="card">
+    <h2>🔀 Key Migration &amp; Ring Rebalancing</h2>
+    <div class="highlight">When cluster topology changes (node joins or leaves), the consistent hash ring is rebuilt and keys must migrate to their new owners. This is <strong>KeyMigrationService</strong> — the component you worked on most.</div>
+
+    <h3>What triggers migration?</h3>
+    <div class="flow">
+      <div class="flow-box">Gossip detects topology change</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">TopologyChangedEvent published</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">KeyMigrationService listens</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">Debounce (batch rapid changes)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">MigrationWorker executes plan</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📋 Migration Decision Logic</h2>
+    <p>For each key in the local cache store, the service computes where the key SHOULD live in the new ring and decides what action to take:</p>
+    <pre><code><span class="kw">for each</span> key in localCacheStore:
+    newReplicaSet = newRing.<span class="fn">getNodes</span>(key, replicationFactor)  <span class="cm">// N=3</span>
+    isSelfInNewReplicas = newReplicaSet.<span class="fn">contains</span>(selfNodeId)
+
+    <span class="kw">if</span> !isSelfInNewReplicas:
+        action = <span class="cls">EVICT</span>        <span class="cm">// I no longer own this key → push to primary, delete</span>
+
+    <span class="kw">else if</span> newNodesJoined:
+        action = <span class="cls">SEED</span>         <span class="cm">// New nodes need my data → push to new nodes</span>
+
+    <span class="kw">else if</span> nodesRemoved:
+        action = <span class="cls">RE_SEED</span>      <span class="cm">// Surviving replicas need to re-sync each other</span>
+
+    <span class="kw">else</span>:
+        action = <span class="cls">SKIP</span>         <span class="cm">// No change for this key</span></code></pre>
+
+    <div class="grid2" style="margin-top:1.5rem;">
+      <div>
+        <h3>EVICT path</h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Push key to primary owner</strong>HTTP PUT to newReplicaSet[0] with data + version</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Schedule delayed delete (15s)</strong>Don't delete immediately — gives LB time to update ring via ClusterSyncService (5s sync interval)</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Delete local copy</strong>After delay, remove from local store</div></div>
+        </div>
+      </div>
+      <div>
+        <h3>SEED path</h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Elect seeder</strong>First non-new replica node in new replica set becomes seeder to avoid thundering herd</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Push to new nodes only</strong>Only seed nodes that didn't exist in old ring — avoids duplicate work</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Retain local copy</strong>Self keeps the key (still in replica set)</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>⚙️ MigrationWorker — Execution Details</h2>
+    <div class="grid2">
+      <div>
+        <h3>Rate Limiting</h3>
+        <pre><code><span class="cm">// 500 keys/sec default — busy-wait for sub-ms precision</span>
+<span class="kw">long</span> intervalNs = <span class="num">1_000_000_000L</span> / rateLimit;
+<span class="kw">long</span> next = <span class="cls">System</span>.<span class="fn">nanoTime</span>() + intervalNs;
+<span class="kw">while</span> (<span class="cls">System</span>.<span class="fn">nanoTime</span>() &lt; next) {} <span class="cm">// busy spin</span></code></pre>
+        <p>Why busy-wait? <code>Thread.sleep(1ms)</code> is too coarse. Busy spin gives sub-millisecond precision for rate control.</p>
+      </div>
+      <div>
+        <h3>Retry + Backoff</h3>
+        <pre><code><span class="cm">// Per-entry exponential backoff</span>
+<span class="kw">long</span> backoff = baseMs; <span class="cm">// 100ms</span>
+<span class="kw">while</span> (retries++ &lt; maxRetries) {
+    <span class="kw">try</span> {
+        <span class="fn">migrateKey</span>(entry);
+        metrics.success++;
+        <span class="kw">break</span>;
+    } <span class="kw">catch</span> (<span class="cls">Exception</span> e) {
+        <span class="cls">Thread</span>.<span class="fn">sleep</span>(Math.<span class="fn">min</span>(backoff, maxBackoffMs));
+        backoff *= <span class="num">2</span>; <span class="cm">// double each time</span>
+    }
+}</code></pre>
+      </div>
+    </div>
+    <div class="warn-box">
+      <strong>Cancel flag:</strong> If topology changes again while migration is running, the worker checks a cancel flag and aborts current plan. A new plan is computed from scratch for the latest topology.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🌊 Visualizing Key Movement — Node Added</h2>
+    <svg width="640" height="220" viewBox="0 0 640 220">
+      <rect width="640" height="220" fill="#0d1117" rx="10"/>
+
+      <!-- Before ring -->
+      <text x="150" y="25" fill="#8892b0" text-anchor="middle" font-size="12" font-weight="600">BEFORE (3 nodes)</text>
+      <circle cx="150" cy="120" r="70" fill="none" stroke="#2d3250" stroke-width="1.5"/>
+      <circle cx="150" cy="50" r="12" fill="#21253a" stroke="#7c83fd" stroke-width="2"/>
+      <text x="150" y="54" fill="#7c83fd" text-anchor="middle" font-size="9" font-weight="700">A</text>
+      <circle cx="211" cy="155" r="12" fill="#21253a" stroke="#56cfb2" stroke-width="2"/>
+      <text x="211" y="159" fill="#56cfb2" text-anchor="middle" font-size="9" font-weight="700">B</text>
+      <circle cx="89" cy="155" r="12" fill="#21253a" stroke="#f7c59f" stroke-width="2"/>
+      <text x="89" y="159" fill="#f7c59f" text-anchor="middle" font-size="9" font-weight="700">C</text>
+      <!-- Key on ring -->
+      <circle cx="185" cy="65" r="6" fill="#ff6b6b"/>
+      <text x="195" y="63" fill="#ff6b6b" font-size="8">K1 → B</text>
+
+      <!-- Arrow -->
+      <text x="310" y="120" fill="#56cfb2" text-anchor="middle" font-size="20">→</text>
+      <text x="310" y="140" fill="#8892b0" text-anchor="middle" font-size="9">Node D joins</text>
+
+      <!-- After ring -->
+      <text x="490" y="25" fill="#8892b0" text-anchor="middle" font-size="12" font-weight="600">AFTER (4 nodes)</text>
+      <circle cx="490" cy="120" r="70" fill="none" stroke="#2d3250" stroke-width="1.5"/>
+      <circle cx="490" cy="50" r="12" fill="#21253a" stroke="#7c83fd" stroke-width="2"/>
+      <text x="490" y="54" fill="#7c83fd" text-anchor="middle" font-size="9" font-weight="700">A</text>
+      <circle cx="551" cy="155" r="12" fill="#21253a" stroke="#56cfb2" stroke-width="2"/>
+      <text x="551" y="159" fill="#56cfb2" text-anchor="middle" font-size="9" font-weight="700">B</text>
+      <circle cx="429" cy="155" r="12" fill="#21253a" stroke="#f7c59f" stroke-width="2"/>
+      <text x="429" y="159" fill="#f7c59f" text-anchor="middle" font-size="9" font-weight="700">C</text>
+      <!-- New node D between A and B -->
+      <circle cx="540" cy="65" r="12" fill="#21253a" stroke="#ff6b6b" stroke-width="2"/>
+      <text x="540" y="69" fill="#ff6b6b" text-anchor="middle" font-size="9" font-weight="700">D</text>
+      <!-- K1 now → D -->
+      <circle cx="525" cy="68" r="6" fill="#ff6b6b"/>
+      <text x="555" y="55" fill="#ff6b6b" font-size="8">K1 → D</text>
+      <text x="555" y="67" fill="#56cfb2" font-size="8">(SEED D)</text>
+    </svg>
+    <p style="font-size:0.85rem; color:var(--muted); margin-top:0.5rem;">K1 was owned by B. After D joins between A and B on the ring, K1 now belongs to D. B detects this and SEEDs D with K1's data. Only ~1/N keys migrate.</p>
+  </div>
+
+  <div class="card">
+    <h2>📊 Migration Metrics</h2>
+    <table>
+      <tr><th>Metric</th><th>Type</th><th>What it tracks</th></tr>
+      <tr><td><code>cache_migration_keys_total{result="success"}</code></td><td>Counter</td><td>Successfully migrated keys</td></tr>
+      <tr><td><code>cache_migration_keys_total{result="failed"}</code></td><td>Counter</td><td>Keys that failed all retries</td></tr>
+      <tr><td><code>cache_migration_keys_total{result="skipped"}</code></td><td>Counter</td><td>Keys with no action needed</td></tr>
+      <tr><td><code>cache_migration_duration_seconds</code></td><td>Timer</td><td>End-to-end migration wall time</td></tr>
+      <tr><td><code>cache_migration_queue_size</code></td><td>Gauge</td><td>Keys still pending in worker queue</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ GOSSIP & FD ═══ -->
+<div id="gossip" class="section">
+  <div class="card">
+    <h2>📡 Gossip Protocol</h2>
+    <div class="highlight">EdgeFabric uses a SWIM-inspired gossip protocol on UDP port 7946. Every second, each node sends its membership view to 2 random peers (fanout=2). Convergence time ≈ O(log N) rounds.</div>
+
+    <div class="grid2">
+      <div>
+        <h3>Node State Machine</h3>
+        <div class="flow">
+          <div class="flow-box" style="border-color:#56cfb2;color:#56cfb2;">ALIVE</div>
+          <div class="flow-arrow">→ no heartbeat →</div>
+          <div class="flow-box" style="border-color:#f7c59f;color:#f7c59f;">SUSPECT</div>
+          <div class="flow-arrow">→ timeout 10s →</div>
+          <div class="flow-box" style="border-color:#ff6b6b;color:#ff6b6b;">DEAD</div>
+        </div>
+        <p style="margin-top:0.5rem;">SUSPECT can be <strong>refuted</strong> back to ALIVE if the target node sends a higher incarnation number.</p>
+      </div>
+      <div>
+        <h3>Gossip Config</h3>
+        <table>
+          <tr><th>Property</th><th>Value</th></tr>
+          <tr><td>fanout</td><td>2 peers/round</td></tr>
+          <tr><td>messageIntervalMs</td><td>1000ms</td></tr>
+          <tr><td>gossipPort</td><td>7946 UDP</td></tr>
+          <tr><td>suspectTimeout</td><td>10000ms</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔀 MembershipMerger — Conflict Resolution</h2>
+    <p>When two nodes exchange state for the same peer, they must deterministically resolve conflicts:</p>
+    <pre><code><span class="cm">// Priority order (highest wins):</span>
+<span class="cm">// 1. Higher incarnation number always wins</span>
+<span class="cm">// 2. Same incarnation → higher severity wins (DEAD > SUSPECT > ALIVE)</span>
+<span class="cm">// 3. Same incarnation + same status → newer heartbeat wins</span>
+
+<span class="kw">boolean</span> <span class="fn">shouldAccept</span>(<span class="cls">NodeInfo</span> existing, <span class="cls">NodeInfo</span> incoming) {
+    <span class="kw">if</span> (incoming.incarnation > existing.incarnation) <span class="kw">return true</span>;
+    <span class="kw">if</span> (incoming.incarnation == existing.incarnation) {
+        <span class="kw">if</span> (<span class="fn">severity</span>(incoming.state) > <span class="fn">severity</span>(existing.state)) <span class="kw">return true</span>;
+        <span class="kw">if</span> (<span class="fn">severity</span>(incoming.state) == <span class="fn">severity</span>(existing.state))
+            <span class="kw">return</span> incoming.heartbeat > existing.heartbeat;
+    }
+    <span class="kw">return false</span>;
+}</code></pre>
+    <div class="highlight">Incarnation vector prevents <strong>split-brain resurrection</strong>: a node marked DEAD with incarnation=5 cannot be brought back to ALIVE with a stale message from incarnation=3.</div>
+  </div>
+
+  <div class="card">
+    <h2>🩺 Failure Detection (SWIM-style)</h2>
+    <div class="grid2">
+      <div>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Direct PING (port 7000 UDP)</strong>PeerSelector picks next target via round-robin. Sends PING, waits for ACK within timeout.</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>If no ACK → Indirect PING_REQ</strong>Asks K random peers to each ping the suspect. "Can you reach node X?" If any helper gets ACK, node is still alive.</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Still no ACK → SUSPECT</strong>SuspectTracker.markSuspect(nodeId). Node NOT immediately declared dead.</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Suspect timeout (10s) → DEAD</strong>SuspectTracker.getExpiredSuspects() returns nodes past timeout. Promoted to DEAD, TopologyChangedEvent fires.</div></div>
+        </div>
+      </div>
+      <div>
+        <h3>PeerSelector — Lock-free Round-Robin</h3>
+        <pre><code><span class="kw">private final</span> <span class="cls">AtomicInteger</span> cursor = <span class="kw">new</span> <span class="cls">AtomicInteger</span>(<span class="num">0</span>);
+<span class="kw">private volatile</span> <span class="cls">List</span>&lt;<span class="cls">String</span>&gt; probeRing;  <span class="cm">// shuffled peers</span>
+
+<span class="kw">public</span> <span class="cls">String</span> <span class="fn">nextTarget</span>() {
+    <span class="kw">int</span> idx = cursor.<span class="fn">getAndIncrement</span>() % probeRing.<span class="fn">size</span>();
+    <span class="kw">return</span> probeRing.<span class="fn">get</span>(idx);
+}
+
+<span class="kw">public</span> <span class="cls">List</span>&lt;<span class="cls">String</span>&gt; <span class="fn">selectHelpers</span>(<span class="cls">String</span> target, <span class="kw">int</span> k) {
+    <span class="cm">// pick k+1 random peers, filter out target</span>
+    <span class="kw">return</span> probeRing.<span class="fn">stream</span>()
+        .<span class="fn">filter</span>(p -&gt; !p.<span class="fn">equals</span>(target))
+        .<span class="fn">limit</span>(k).<span class="fn">collect</span>(toList());
+}</code></pre>
+        <div class="warn-box">Uses <code>java.util.Random</code> (not SecureRandom) — no crypto needed, ~100x faster for gossip sampling.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔗 Gossip Join Flow</h2>
+    <div class="flow" style="flex-direction:column; align-items:flex-start; gap:0.5rem;">
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <div class="flow-box" style="border-color:#7c83fd;">New Node Starts</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Reads seed peers from config/DNS</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">POST /cluster/join to each seed</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:0.5rem; padding-left:2rem;">
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Receives full membership digest</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Merges into local view</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Starts gossip loop</div>
+      </div>
+    </div>
+    <div class="highlight" style="margin-top:1rem;">
+      <code>POST /cluster/join</code> — peer sends its NodeInfo, receives back the full membership list. This bootstraps the new node's view of the cluster in O(1) instead of waiting for gossip convergence.
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ QUORUM ═══ -->
+<div id="quorum" class="section">
+  <div class="card">
+    <h2>⚖️ Quorum Operations (N=3, W=2, R=2)</h2>
+    <div class="highlight"><strong>Quorum guarantee:</strong> W + R > N ensures every read sees at least one node that received the latest write. 2 + 2 > 3 ✓</div>
+
+    <div class="grid2">
+      <div>
+        <h3>Write Quorum</h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Get N=3 replicas from ring</strong><code>cacheRouter.routeToReplicas(key, 3)</code></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Assign version</strong>Monotonic counter: <code>AtomicLong.incrementAndGet()</code> seeded from currentTimeMillis</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Parallel PUT to all 3 nodes</strong>WebClient reactive parallel with version in header <code>X-Quorum-Version</code></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Wait for W=2 acks</strong><code>.take(2)</code> on success stream. Return 201 to client.</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-body"><strong>WAL append with failedNodes</strong>Record which nodes missed the write for targeted anti-entropy</div></div>
+        </div>
+      </div>
+      <div>
+        <h3>Read Quorum</h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Get N=3 replicas from ring</strong>Same routing as write</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Parallel GET to all 3 nodes</strong>Collects ALL responses (success + error)</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Require R=2 successes</strong>If all 404/410 → CacheKeyNotFoundException</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Winner = highest version</strong>Select response with max <code>X-Quorum-Version</code></div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Async read repair</strong>Stale replicas (lower version) get async PUT with winner data</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>💻 QuorumService — Reactive Code</h2>
+    <pre><code><span class="kw">public</span> <span class="cls">Mono</span>&lt;<span class="cls">WalWriteMetadata</span>&gt; <span class="fn">quorumWriteWithMetadata</span>(<span class="cls">String</span> key, <span class="kw">byte</span>[] data, ...) {
+    <span class="cls">List</span>&lt;<span class="cls">CacheNode</span>&gt; replicas = cacheRouter.<span class="fn">routeToReplicas</span>(key, replicationFactor);
+    <span class="kw">long</span> version = versionCounter.<span class="fn">incrementAndGet</span>();
+
+    <span class="cls">List</span>&lt;<span class="cls">Mono</span>&lt;<span class="cls">NodeResponse</span>&gt;&gt; writes = replicas.<span class="fn">stream</span>()
+        .<span class="fn">map</span>(node -&gt; httpClient.<span class="fn">forwardPutRequest</span>(node, key, data, version, expiresAt)
+            .<span class="fn">map</span>(r -&gt; <span class="kw">new</span> <span class="cls">NodeResponse</span>(node, <span class="kw">true</span>))
+            .<span class="fn">onErrorReturn</span>(<span class="kw">new</span> <span class="cls">NodeResponse</span>(node, <span class="kw">false</span>)))
+        .<span class="fn">collect</span>(toList());
+
+    <span class="kw">return</span> <span class="cls">Flux</span>.<span class="fn">merge</span>(writes)
+        .<span class="fn">collectList</span>()
+        .<span class="fn">flatMap</span>(responses -&gt; {
+            <span class="kw">long</span> successes = responses.<span class="fn">stream</span>().<span class="fn">filter</span>(<span class="cls">NodeResponse</span>::success).<span class="fn">count</span>();
+            <span class="kw">if</span> (successes &lt; writeQuorum)
+                <span class="kw">return</span> <span class="cls">Mono</span>.<span class="fn">error</span>(<span class="kw">new</span> <span class="cls">QuorumNotMetException</span>(...));
+            <span class="kw">return</span> <span class="cls">Mono</span>.<span class="fn">just</span>(<span class="kw">new</span> <span class="cls">WalWriteMetadata</span>(version, successNodes, failedNodes));
+        });
+}</code></pre>
+  </div>
+
+  <div class="card">
+    <h2>🔧 Read Repair</h2>
+    <div class="grid2">
+      <div>
+        <p>Read repair is triggered asynchronously when a quorum read detects version conflicts:</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Identify stale replicas</strong>Nodes whose response version &lt; winner's version</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Async PUT to stale nodes</strong>Uses winner's data + version. Never blocks read path.</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Metric: read_repair_total</strong>Tracked for observability</div></div>
+        </div>
+      </div>
+      <div>
+        <h3>WAL Anti-Entropy</h3>
+        <p>The WAL records <code>failedNodes</code> from each write. A background anti-entropy process reads the WAL and retries writes specifically to failed nodes — targeted repair rather than scanning all keys.</p>
+        <div class="warn-box"><code>WalEntry.forQuorumPut(key, data, version, successNodes, failedNodes)</code> — the new factory method with outcome tracking you can describe as your contribution.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🤝 Touch / TTL Extension</h2>
+    <pre><code><span class="cm">// Touch extends TTL without data transfer — PATCH /touch endpoint</span>
+<span class="kw">public</span> <span class="cls">Mono</span>&lt;<span class="cls">TouchResult</span>&gt; <span class="fn">quorumTouch</span>(<span class="cls">String</span> key, <span class="kw">long</span> newExpiresAt) {
+    <span class="cls">List</span>&lt;<span class="cls">CacheNode</span>&gt; replicas = cacheRouter.<span class="fn">routeToReplicas</span>(key, replicationFactor);
+    <span class="cm">// PATCH to each replica with X-Expires-At header</span>
+    <span class="cm">// Wait for W=2 acks, return applied expiresAt</span>
+}</code></pre>
+    <p style="font-size:0.85rem; color:var(--muted);">Useful for session renewal: extend cache TTL without re-sending the full payload.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ EVICTION ═══ -->
+<div id="eviction" class="section">
+  <div class="card">
+    <h2>🗑 Dual Eviction Strategy</h2>
+    <div class="highlight">EdgeFabric uses TWO eviction systems running in parallel: <strong>LRU</strong> for memory pressure and <strong>Time Wheel</strong> for TTL expiry. They coordinate to avoid double-eviction.</div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2>📊 LRU Eviction Service</h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Doubly-linked list</strong>HEAD = most recently used, TAIL = least recently used</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Non-blocking access log</strong>ArrayBlockingQueue(100K) — GET operations log access events without touching the LL directly</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Background drain (50ms)</strong>Moves buffered events to LL head. Uses tryLock(10ms) — never blocks a PUT</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Eviction</strong>When memory full: remove from TAIL until enough freed. AtomicLong tracks currentMemoryUsage.</div></div>
+      </div>
+      <pre><code><span class="cm">// Memory tracking — computed at construction (immutable)</span>
+<span class="kw">long</span> memorySize = data.length
+    + key.<span class="fn">length</span>() * <span class="num">2</span>    <span class="cm">// UTF-16 chars</span>
+    + <span class="num">64</span>;                  <span class="cm">// object header overhead</span></code></pre>
+    </div>
+    <div class="card">
+      <h2>⏰ Time Wheel Eviction</h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>60 buckets, one per second</strong>Circular buffer indexed by (currentSecond % 60)</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>O(1) insertion</strong>bucketIndex = (currentBucket + delaySeconds) % 60</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Tick every 1s</strong>Evict all keys in current bucket IF their actual expiryTime has passed (lazy check)</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><strong>TOUCH updates bucket</strong>When TTL extended, key moves to new bucket index</div></div>
+      </div>
+      <div class="warn-box">The lazy check in step 3 prevents premature eviction when TTL is extended after insertion.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📝 CacheItem — Immutable Entry</h2>
+    <pre><code><span class="kw">public record</span> <span class="cls">CacheItem</span>(
+    <span class="kw">byte</span>[]      data,           <span class="cm">// serialized value</span>
+    <span class="kw">long</span>        expiryTime,     <span class="cm">// absolute epoch-ms</span>
+    <span class="kw">long</span>        version,        <span class="cm">// monotonic — for read repair &amp; quorum</span>
+    <span class="kw">long</span>        memorySize,     <span class="cm">// immutable — estimated heap footprint</span>
+    <span class="kw">volatile long</span> lastAccessTime <span class="cm">// volatile — for LRU ordering</span>
+) {}</code></pre>
+    <div class="highlight">version is assigned by the load balancer's QuorumService, not the cache node — ensures global ordering across all writes to a key.</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ DEPLOY ═══ -->
+<div id="deploy" class="section">
+  <div class="grid2">
+    <div class="card">
+      <h2>☁️ AWS Deployment Architecture</h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>No ECS, No ECR</strong>Images pushed to Docker Hub (anubhavpratap/*)</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Jenkins → Docker Hub</strong>release/* branch triggers Docker build + push</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Jenkins → AWS SSM</strong>SendCommand to EC2 instances to pull new image and restart container</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><strong>EC2 discovery by tag</strong>Role=hermes-loadbalancer / Role=hermes-cache-node</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Cloud Map registration</strong>Cache nodes self-register IP on startup. Deregister on shutdown.</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>🔀 Branch → Pipeline</h2>
+      <table>
+        <tr><th>Branch</th><th>Pipeline stages</th></tr>
+        <tr><td><code>feature/*</code></td><td>Build → SonarQube → Quality Gate</td></tr>
+        <tr><td><code>develop</code></td><td>+ Package → E2E Tests (Docker Compose)</td></tr>
+        <tr><td><code>release/*</code></td><td>+ Docker Build/Push → SSM Deploy to EC2</td></tr>
+        <tr><td><code>main</code></td><td>+ Docker Build/Push (prod deploy TBD)</td></tr>
+      </table>
+      <div class="warn-box" style="margin-top:1rem;">Tests run in Jenkins via <code>mvn verify</code>. Docker builds skip tests (<code>-DskipTests</code>) for speed.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🐳 Docker Compose — Local Dev (4 nodes)</h2>
+    <pre><code><span class="cm"># 4-node cache cluster + observability stack</span>
+services:
+  loadbalancer:   ports: [<span class="str">"8080:8080"</span>]
+  cache-node-1:   ports: [<span class="str">"8081:8082"</span>]  <span class="cm"># GOSSIP: 7946/udp, FD: 7000/udp</span>
+  cache-node-2:   ports: [<span class="str">"8082:8082"</span>]
+  cache-node-3:   ports: [<span class="str">"8083:8082"</span>]
+  cache-node-4:   ports: [<span class="str">"8084:8082"</span>]
+  prometheus:     ports: [<span class="str">"9090:9090"</span>]
+  grafana:        ports: [<span class="str">"3000:3000"</span>]
+  loki:           ports: [<span class="str">"3100:3100"</span>]
+  tempo:          ports: [<span class="str">"3200:3200"</span>]
+
+<span class="cm"># DNS alias for all cache nodes:</span>
+<span class="cm"># cache-nodes.cache-cluster.internal</span></code></pre>
+  </div>
+
+  <div class="card">
+    <h2>📊 Observability</h2>
+    <table>
+      <tr><th>Tool</th><th>Purpose</th><th>Key metrics</th></tr>
+      <tr><td>Prometheus</td><td>Metrics scrape</td><td>gateway.put/get latency, quorum.read/write, migration counters</td></tr>
+      <tr><td>Grafana</td><td>Dashboards</td><td>Ring topology, cache hit rate, replication lag</td></tr>
+      <tr><td>Loki</td><td>Log aggregation</td><td>Structured JSON logs via Logstash encoder</td></tr>
+      <tr><td>Tempo</td><td>Distributed tracing</td><td>End-to-end request traces, quorum operation spans</td></tr>
+    </table>
+    <div class="highlight" style="margin-top:1rem;">Structured logging: every log line is JSON with traceId, nodeId, operation, duration, statusCode, result fields. Machine-readable for automated Ops.</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ Q&A ═══ -->
+<div id="qa" class="section">
+  <div class="card">
+    <h2>💬 Interview Q&amp;A Bank</h2>
+    <p>Click any question to expand the answer.</p>
+  </div>
+
+  <div class="card">
+    <h2>🔵 Consistent Hashing</h2>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">What is consistent hashing and why does EdgeFabric use it? <span class="arrow">▼</span></div>
+      <div class="qa-a">Consistent hashing maps both keys and nodes to positions on a virtual ring using the same hash function. To find the owner of a key, you hash the key and walk clockwise to the next node. <strong>The key advantage:</strong> when a node is added or removed, only ~K/N keys need to migrate (K = total keys, N = node count) instead of remapping ~all keys as with modulo hashing. EdgeFabric uses it so that adding a 4th cache node only migrates ~25% of keys rather than re-routing everything.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">What are virtual nodes and why does EdgeFabric use 150 per physical node? <span class="arrow">▼</span></div>
+      <div class="qa-a">Without virtual nodes, physical nodes hash to positions on the ring that may be unevenly spaced — one node might own 60% of the ring, another 10%. Virtual nodes create 150 hash positions per physical node (hashed as <code>"nodeId#vnode-0"</code> through <code>"nodeId#vnode-149"</code>). These interleave across the ring so each physical node ends up owning approximately equal share. With 150 vnodes per node, standard deviation of load distribution drops to ~5% vs ~30% without vnodes. 150 is a tuned balance — too few means poor distribution, too many wastes memory on the skip list.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">Why ConcurrentSkipListMap and not a TreeMap or HashMap? <span class="arrow">▼</span></div>
+      <div class="qa-a"><ul><li><strong>TreeMap</strong> is not thread-safe — requires external synchronization, which would turn the StampedLock optimization pointless.</li><li><strong>HashMap</strong> has O(1) lookup but cannot do ceiling lookup (find next node clockwise). ConcurrentSkipListMap supports <code>ceilingEntry(hash)</code> natively in O(log n).</li><li><strong>ConcurrentSkipListMap</strong> is thread-safe, ordered, and supports the ceiling/floor operations needed for ring traversal. It also has lower contention than a synchronized TreeMap under concurrent reads.</li></ul></div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">Explain the StampedLock optimistic read pattern used in ConsistentHashRing <span class="arrow">▼</span></div>
+      <div class="qa-a">StampedLock has three modes: write lock, read lock, and <strong>optimistic read</strong>. Optimistic read acquires no lock at all — it just saves a stamp. After the read, it calls <code>validate(stamp)</code>. If a write happened between the stamp and validate, validate returns false and we fall back to a real read lock. In EdgeFabric, node topology changes (addNode/removeNode) are rare, so 99.9% of getNode calls succeed with optimistic read — zero lock overhead. Only on the rare concurrent topology change do we pay for a real read lock. This is the lowest-latency read strategy possible short of lock-free.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">How does the ring handle the "wrap-around" case? <span class="arrow">▼</span></div>
+      <div class="qa-a"><code>ring.ceilingEntry(hash)</code> returns the next node at or above the hash position. If the hash is greater than all ring positions (end of ring), ceilingEntry returns null. In that case, EdgeFabric uses <code>ring.firstEntry().getValue()</code> — the node at the beginning of the ring. This implements the circular "wrap-around" semantic of the ring.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">Why XXHash over MurmurHash3? <span class="arrow">▼</span></div>
+      <div class="qa-a">XXHash (<code>net.openhft:zero-allocation-hashing</code>) produces <strong>zero heap objects</strong> per call — it operates entirely on stack. MurmurHash3 via Guava allocates some temporary objects. At high throughput (millions of lookups/sec), GC pressure from hash calls can cause latency spikes. XXHash is also ~10x faster in throughput benchmarks. Both have excellent distribution quality. MurmurHash3 is kept as a fallback (configurable via <code>ring.hash-algorithm</code> in application.yml).</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔀 Key Migration</h2>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">Walk me through what happens when a new cache node joins the cluster <span class="arrow">▼</span></div>
+      <div class="qa-a"><ul><li>New node starts, reads seed peers from config/DNS</li><li>Sends <code>POST /cluster/join</code> to seeds — receives full membership digest</li><li>Starts gossip loop; topology change propagates to all nodes in O(log N) rounds</li><li>Each node's gossip protocol detects the new member → fires <strong>TopologyChangedEvent</strong></li><li><strong>KeyMigrationService</strong> receives event, debounces (batches rapid changes)</li><li>Rebuilds ring with new node → scans all local keys</li><li>For each key: if new node is now in replica set and self is elected seeder → <strong>SEED</strong> new node with that key's data</li><li>ClusterSyncService on the LB also re-syncs (every 5s) → adds new node to CacheRouter → future requests route to new node</li></ul></div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">Why is there a 15-second delayed deletion after EVICT? <span class="arrow">▼</span></div>
+      <div class="qa-a">When a node decides to EVICT a key (push to new owner and delete locally), there's a race condition: the load balancer still has the old ring and might route a read request to this node for that key. If we deleted immediately, the LB would get a 404 even though the key was just migrated. The <strong>15-second delay</strong> gives the LB's ClusterSyncService (which runs every 5s) time to discover the new ring topology and stop routing that key to the old node. 15s = 3× the LB sync interval, providing a safety buffer.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">What is the thundering herd problem in SEED and how does seeder election prevent it? <span class="arrow">▼</span></div>
+      <div class="qa-a">When a new node joins, multiple existing replicas all have the same key. Without coordination, all of them would simultaneously try to SEED the new node with the same key — wasting bandwidth and potentially causing write conflicts. EdgeFabric uses <strong>seeder election</strong>: the first non-new node in the new replica set is elected as the single seeder. All other replicas with that key detect they're not the elected seeder and skip SEED for that key. Result: exactly one node seeds each key to the new node, eliminating the thundering herd.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">How does migration handle a topology change that happens DURING migration? <span class="arrow">▼</span></div>
+      <div class="qa-a">MigrationWorker has a <strong>cancel flag</strong> (volatile boolean or AtomicBoolean). When KeyMigrationService receives a new TopologyChangedEvent while migration is in progress, it sets the cancel flag on the running worker. The worker checks this flag in its per-key loop and aborts when set. KeyMigrationService then computes a fresh migration plan from the current (latest) topology and starts a new MigrationWorker. This ensures migration is always based on the most current ring state, not a stale snapshot.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">How do you avoid losing data during key migration? <span class="arrow">▼</span></div>
+      <div class="qa-a"><ul><li><strong>Push before delete:</strong> EVICT path always PUTs key to new owner before scheduling deletion. Data exists on both nodes during the transition window.</li><li><strong>Delayed delete (15s):</strong> Key stays on old node for 15s after push, ensuring LB routes requests to new owner first.</li><li><strong>Retry with backoff:</strong> If push fails, worker retries with exponential backoff (100ms base, 10s max). Only deletes after confirmed push.</li><li><strong>WAL:</strong> All writes are logged to WAL. Anti-entropy process can replay WAL to recover any key that was lost during migration failure.</li><li><strong>Quorum reads:</strong> R=2 means a read needs 2 replicas to agree. Even if one replica is mid-migration, the other two can serve the request.</li></ul></div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">What's the rate limit on migration and why? <span class="arrow">▼</span></div>
+      <div class="qa-a">Default: <strong>500 keys/second</strong>. Without rate limiting, migration would consume all network bandwidth and CPU, starving normal cache operations. The rate limiter uses a <strong>busy-wait spin loop</strong> (not Thread.sleep) because 1/500 keys/sec = 2ms intervals and Thread.sleep has ~1ms jitter — too coarse for this granularity. The spin loop checks System.nanoTime() and yields until the next emission time, giving sub-millisecond precision. The rate is configurable — in practice you'd tune it based on observed cluster load.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📡 Gossip &amp; Failure Detection</h2>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">Why gossip instead of a centralized registry? <span class="arrow">▼</span></div>
+      <div class="qa-a">A centralized registry (like ZooKeeper or Consul) is a single point of failure and a scalability bottleneck. Gossip is <strong>decentralized</strong>: every node maintains its own membership view and disseminates updates peer-to-peer. Advantages: no SPOF, scales to large clusters (convergence is O(log N)), network partition tolerant (each partition eventually reconverges independently). Disadvantage: eventual consistency — there's a brief window where nodes have inconsistent views. For EdgeFabric's use case (cache routing), brief inconsistency is acceptable; quorum operations handle the correctness guarantee.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">Why mark nodes SUSPECT before DEAD? Why not immediately DEAD? <span class="arrow">▼</span></div>
+      <div class="qa-a">Network hiccups, GC pauses, and load spikes can cause temporary unresponsiveness. Immediately marking a node DEAD would trigger unnecessary key migration and gossip churn. The SUSPECT state is a <strong>grace period</strong> (10 seconds default): the node gets indirect PING_REQ probes from K other peers. If any helper reaches the suspect node, it's still alive — just temporarily unreachable from the detector. This SWIM-style indirect probing dramatically reduces false positives. Only after the suspect timeout with no ACK from any path is the node promoted to DEAD.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">How does the incarnation vector prevent a dead node from being resurrected? <span class="arrow">▼</span></div>
+      <div class="qa-a">Each node maintains an <strong>incarnation number</strong> that starts at 0 and increments when the node restarts or refutes a SUSPECT. The MembershipMerger only accepts state updates with incarnation ≥ existing. So: if node A is marked DEAD with incarnation=5, a stale gossip message saying A is ALIVE with incarnation=3 is rejected. Only A itself can override this by bumping its incarnation to 6+ via refutation — which it can only do if it's actually alive and able to send messages.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">How fast does gossip converge and why? <span class="arrow">▼</span></div>
+      <div class="qa-a">With fanout=2 and interval=1s, convergence is <strong>O(log₂ N)</strong> rounds. For a 10-node cluster: log₂(10) ≈ 3.3 → ~4 seconds for all nodes to see a topology change. This is because gossip spreads information like an epidemic: after each round the number of informed nodes doubles (fanout=2). The logarithmic convergence makes gossip highly scalable — doubling the cluster size adds only one more round. For EdgeFabric's expected cluster sizes (4–16 nodes), convergence is under 5 seconds.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>⚖️ Quorum &amp; Consistency</h2>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">Why W=2, R=2, N=3? What guarantee does this provide? <span class="arrow">▼</span></div>
+      <div class="qa-a">The <strong>quorum guarantee</strong>: W + R > N. With 2 + 2 > 3, the write quorum and read quorum always overlap by at least one node. This means every read will include at least one node that received the latest write. In practice: a write succeeds when 2 of 3 replicas ack. A read succeeds when 2 of 3 respond. At least one node is in both sets → it has the latest version. EdgeFabric then uses the highest version among read responses as the winner. Setting W=R=2 with N=3 allows one node failure while maintaining both read and write availability.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">How does version numbering work in EdgeFabric? <span class="arrow">▼</span></div>
+      <div class="qa-a">The load balancer's QuorumService owns version assignment via an <strong>AtomicLong</strong> seeded from <code>System.currentTimeMillis()</code> at startup. Each write call does <code>versionCounter.incrementAndGet()</code>. The version is passed to all N replica nodes as the <code>X-Quorum-Version</code> header. Cache nodes store the version alongside the data. On read, replicas return their stored version; the LB selects the response with the highest version as the winner. Keeping version assignment centralized (at LB) ensures global monotonic ordering across all writes.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">What happens if only 1 of 3 cache nodes is available? <span class="arrow">▼</span></div>
+      <div class="qa-a">Both read and write quorums require 2 responses. With only 1 node available: <ul><li><strong>Write:</strong> QuorumService waits for W=2 acks, gets only 1 → throws <code>QuorumNotMetException</code> → LB returns 503 to client</li><li><strong>Read:</strong> QuorumService waits for R=2 responses, gets only 1 → same exception → 503</li></ul> This is a <strong>CP trade-off</strong>: EdgeFabric sacrifices availability (returns error) to maintain consistency (refuses to serve potentially stale data). The WAL captures the failed write so anti-entropy can retry when the downed node recovers.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">What is read repair and when is it triggered? <span class="arrow">▼</span></div>
+      <div class="qa-a">Read repair is triggered when a quorum read collects R=2 successful responses but they have <strong>different versions</strong> — indicating a stale replica. The winner (highest version) is returned to the client. Asynchronously (non-blocking), ReadRepairService sends PUT requests to all stale replicas with the winner's data and version. This repairs replicas that missed a write (e.g., were down when the write was issued). It's a background self-healing mechanism that improves consistency over time without adding latency to the read path.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>⚙️ System Design &amp; Architecture</h2>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">How does multi-tenancy work in EdgeFabric? <span class="arrow">▼</span></div>
+      <div class="qa-a">Multi-tenancy is implemented via <strong>key namespacing</strong>. Every cache key is prefixed with the tenant identifier: <code>tenant:key</code>. The consistent hash ring routes on the full prefixed key, so different tenants' keys naturally distribute across the same nodes. There's no per-tenant ring — the prefix ensures key isolation at the data level. The load balancer validates key format against a regex pattern (<code>^[a-zA-Z0-9:_-]+$</code>) and extracts tenant from the URL path. This approach is simple and scalable — adding a new tenant requires no infrastructure changes.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">How does service discovery work — Cloud Map vs Docker DNS? <span class="arrow">▼</span></div>
+      <div class="qa-a">EdgeFabric supports both: <ul><li><strong>Docker Compose (dev):</strong> All cache nodes share the DNS alias <code>cache-nodes.cache-cluster.internal</code>. Docker's internal DNS round-robins between all containers with that alias. LB resolves this DNS to get all node IPs.</li><li><strong>AWS Production:</strong> Cache nodes call AWS ServiceDiscovery API on startup (<code>@PostConstruct</code>) to register their private IP in Cloud Map service <code>srv-6lnd44knosnojplq</code>. On shutdown (<code>@PreDestroy</code>), they deregister. The LB resolves the Cloud Map DNS name <code>cache-nodes.cache-cluster.internal</code> which returns all registered IPs. Cloud Map is enabled via <code>cloudmap.enabled=true</code>.</li></ul> ClusterSyncService tries peer gossip first, falls back to DNS if peers are unavailable.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">Why use SSM for deployment instead of ECS or Kubernetes? <span class="arrow">▼</span></div>
+      <div class="qa-a">SSM (Systems Manager) is simpler and cheaper for this scale. ECS/Kubernetes add significant operational complexity (control plane, task definitions, service meshes). With SSM: Jenkins discovers EC2 instances by tag (<code>Role=hermes-cache-node</code>), sends shell commands via SSM RunCommand to pull the latest Docker Hub image and restart the container — no SSH keys needed, fully automated, IAM-controlled. The tradeoff is less built-in autoscaling and orchestration, but EdgeFabric's gossip-based membership and manual ring scaling are sufficient for current requirements.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">What is the WAL and how does it support anti-entropy? <span class="arrow">▼</span></div>
+      <div class="qa-a">The Write-Ahead Log records every PUT operation with its key, data, version, and — critically — <strong>which nodes succeeded and which failed</strong> (<code>successNodes</code> / <code>failedNodes</code> in <code>WalWriteMetadata</code>). When a write achieves W=2 acks but the 3rd node was unavailable, the WAL records the 3rd node as failed. An anti-entropy background process periodically reads the WAL and retries writes specifically to the <code>failedNodes</code> — targeted repair rather than a full key scan. This ensures eventual consistency: every node that should have a key eventually gets it, even across transient failures.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">What is structured logging and why does EdgeFabric use it? <span class="arrow">▼</span></div>
+      <div class="qa-a">Every log line is output as a JSON object with fields: timestamp, level, service, traceId, nodeId, operation, duration, statusCode, result, key. This is "structured logging" — machine-readable logs. Benefits: <ul><li>Loki/Elasticsearch can index and query any field (e.g., "show all PUT ops with duration > 100ms for tenant=acme-corp")</li><li>Agentic ops can parse logs programmatically without regex</li><li>traceId links logs across LB and all cache nodes for a single request (distributed tracing)</li></ul> Implementation: Logstash Logback Encoder writes JSON, MDC fields are included automatically, async appenders prevent I/O blocking the request thread.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">How does grpc transport work for GET operations? <span class="arrow">▼</span></div>
+      <div class="qa-a">GET transport is configurable via <code>cluster.get.transport: grpc</code> (vs <code>http</code>). In Docker Compose, gRPC is used for cache node GET calls on port 9091. gRPC benefits: <ul><li>HTTP/2 multiplexing — multiple concurrent requests over one connection, reducing connection overhead</li><li>Binary protobuf encoding — smaller payloads than JSON</li><li>Built-in streaming support</li></ul> For quorum reads (3 parallel GETs), multiplexing means all 3 requests share one connection per node vs 3 separate HTTP/1.1 connections. This reduces latency and connection pool pressure, especially important for the read-heavy cache workload.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔒 JVM &amp; Performance</h2>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">What JVM tuning does EdgeFabric use and why? <span class="arrow">▼</span></div>
+      <div class="qa-a">From the load balancer Dockerfile: <ul><li><code>-XX:+UseG1GC</code> — G1 GC for low pause times with large heaps</li><li><code>-XX:MaxGCPauseMillis=20</code> — target max 20ms GC pauses (P99 latency SLA)</li><li><code>-Xmx512m</code> — 512MB heap limit (prevents OOM on the EC2 instance)</li><li><code>-XX:+UseStringDeduplication</code> — G1 deduplicates identical strings (cache keys, tenant names are highly repeated) → reduces heap by ~10-20%</li><li><code>-XX:+HeapDumpOnOutOfMemoryError</code> — auto heap dump on OOM for post-mortem analysis</li></ul> The 20ms pause target works with G1's concurrent marking — most GC work happens without stopping the world.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggleQA(this)">Why use AtomicReference for NodeState instead of synchronized? <span class="arrow">▼</span></div>
+      <div class="qa-a">NodeInfo's state transitions (ALIVE → SUSPECT → DEAD) are done via CAS (Compare-And-Swap): <code>stateRef.compareAndSet(expected, newState)</code>. If two threads try to transition a node simultaneously, only one CAS succeeds. <strong>Advantages over synchronized:</strong> no thread blocking (CAS is a single CPU instruction), no lock contention, no deadlock risk, and the JVM can optimize CAS to a hardware instruction (LOCK CMPXCHG on x86). For gossip's high-frequency state updates across many nodes, lock-free CAS scales much better than synchronized blocks.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Navigation
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Q&A toggle
+function toggleQA(el) {
+  el.classList.toggle('open');
+  const ans = el.nextElementSibling;
+  ans.classList.toggle('open');
+}
+
+// Ring demo
+const COLORS = ['#7c83fd','#56cfb2','#f7c59f','#ff6b6b','#c678dd','#61afef'];
+let nodes = [
+  {id:'node-A', color: COLORS[0]},
+  {id:'node-B', color: COLORS[1]},
+  {id:'node-C', color: COLORS[2]},
+];
+let nodeCounter = 4;
+
+function drawRing() {
+  const svg = document.getElementById('ring-svg');
+  const cx = 210, cy = 150, r = 100;
+
+  // Clear
+  svg.innerHTML = `<rect width="420" height="300" fill="#0d1117" rx="10"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#2d3250" stroke-width="1.5"/>`;
+
+  const total = nodes.length;
+  nodes.forEach((node, i) => {
+    const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
+    const x = cx + r * Math.cos(angle);
+    const y = cy + r * Math.sin(angle);
+
+    // Arc segment
+    const startAngle = ((i - 0.5) / total) * 2 * Math.PI - Math.PI / 2;
+    const endAngle = ((i + 0.5) / total) * 2 * Math.PI - Math.PI / 2;
+    const x1 = cx + r * Math.cos(startAngle);
+    const y1 = cy + r * Math.sin(startAngle);
+    const x2 = cx + r * Math.cos(endAngle);
+    const y2 = cy + r * Math.sin(endAngle);
+    svg.innerHTML += `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z" fill="${node.color}22" stroke="none"/>`;
+
+    // Node circle
+    svg.innerHTML += `<circle cx="${x}" cy="${y}" r="16" fill="#21253a" stroke="${node.color}" stroke-width="2"/>`;
+    svg.innerHTML += `<text x="${x}" y="${y+4}" fill="${node.color}" text-anchor="middle" font-size="10" font-weight="700">${node.id.replace('node-','')}</text>`;
+
+    // Vnode dots
+    for (let v = 0; v < 5; v++) {
+      const va = angle + (v - 2) * 0.12;
+      const vx = cx + r * Math.cos(va);
+      const vy = cy + r * Math.sin(va);
+      svg.innerHTML += `<circle cx="${vx}" cy="${vy}" r="2.5" fill="${node.color}" opacity="0.5"/>`;
+    }
+  });
+
+  svg.innerHTML += `<text x="${cx}" y="${cy-10}" fill="#8892b0" text-anchor="middle" font-size="10">${total} nodes</text>`;
+  svg.innerHTML += `<text x="${cx}" y="${cy+8}" fill="#8892b0" text-anchor="middle" font-size="9">${total * 150} ring positions</text>`;
+
+  document.getElementById('node-count').textContent = total;
+  document.getElementById('vnode-count').textContent = total * 150;
+}
+
+function log(msg) {
+  const el = document.getElementById('ring-log');
+  el.textContent += msg + '\n';
+  el.scrollTop = el.scrollHeight;
+}
+
+function addNodeDemo() {
+  const id = 'node-' + String.fromCharCode(64 + nodeCounter);
+  nodeCounter++;
+  nodes.push({id, color: COLORS[(nodes.length) % COLORS.length]});
+  const affected = Math.round(100 / nodes.length);
+  log(`+ Added ${id}. ~${affected}% of keys migrate to new node. Ring: ${nodes.length * 150} positions.`);
+  drawRing();
+}
+
+function removeNodeDemo() {
+  if (nodes.length <= 2) { log('! Minimum 2 nodes required.'); return; }
+  const removed = nodes.pop();
+  log(`- Removed ${removed.id}. Keys redistribute to remaining ${nodes.length} nodes.`);
+  drawRing();
+}
+
+function lookupDemo() {
+  const keys = ['user:session:abc', 'product:123', 'cart:user:xyz', 'config:global'];
+  const key = keys[Math.floor(Math.random() * keys.length)];
+  const hash = simpleHash(key);
+  const nodeIdx = hash % nodes.length;
+  log(`🔍 key="${key}" hash=${hash} → routed to ${nodes[nodeIdx].id}`);
+}
+
+function simpleHash(s) {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h) ^ s.charCodeAt(i);
+  return Math.abs(h % 1000);
+}
+
+drawRing();
+</script>
+</body>
+</html>
